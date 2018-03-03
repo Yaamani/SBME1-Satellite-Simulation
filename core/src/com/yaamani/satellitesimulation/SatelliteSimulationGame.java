@@ -29,9 +29,13 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 
 	@Override
 	public void resize(int width, int height) {
-		float currentWorldHeight = viewport.getWorldHeight();
+	    float currentWorldHeight = viewport.getWorldHeight();
 
-		viewport.update(width, height, false);
+        if (height >= width) {
+        	Gdx.graphics.setWindowedMode(height, height);
+			viewport.update(height,	height, false);
+		}
+        else viewport.update(width, height, false);
 
 		if (currentWorldHeight != 0)  {
 			float aspectRatio = viewport.getWorldWidth() / viewport.getWorldHeight();
