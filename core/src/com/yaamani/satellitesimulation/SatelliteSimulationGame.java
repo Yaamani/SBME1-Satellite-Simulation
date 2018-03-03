@@ -23,6 +23,9 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 	private float zoomFactor = 0;
 	private float screenToWorldRatio = 0;
 
+	private float aspectRatio = 0;
+	private float worldHeight = 0;
+
 	@Override
 	public void create () {
 		viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
@@ -58,8 +61,12 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 		zoomFactor = viewport.getWorldHeight() / WORLD_SIZE;
 		screenToWorldRatio = WORLD_SIZE / viewport.getScreenHeight();
 
+		aspectRatio = viewport.getWorldWidth() / viewport.getWorldHeight();
+		worldHeight = viewport.getWorldHeight();
+
 		keyboardControls();
 		flingReleased();
+		isZoomStarted();
 
 		viewport.apply();
 
@@ -107,16 +114,6 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 			cameraPos.set(cameraPos.x, cameraPos.y + CAMERA_MOVEMENT_AMOUNT * deltaTime, cameraPos.z);
 		}
 
-		float aspectRatio = viewport.getWorldWidth() / viewport.getWorldHeight();
-		float worldHeight = viewport.getWorldHeight();
-		if (Gdx.input.isKeyPressed(Input.Keys.EQUALS) | Gdx.input.isKeyPressed(Input.Keys.PLUS)) {
-			viewport.setWorldHeight(worldHeight - CAMERA_MOVEMENT_AMOUNT * deltaTime);
-			viewport.setWorldWidth(aspectRatio * (worldHeight - CAMERA_MOVEMENT_AMOUNT * deltaTime));
-		} else if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
-			viewport.setWorldHeight(worldHeight + CAMERA_MOVEMENT_AMOUNT * deltaTime);
-			viewport.setWorldWidth(aspectRatio * (worldHeight + CAMERA_MOVEMENT_AMOUNT * deltaTime));
-		}
-
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			cameraPos.set(0, 0, 0);
 			viewport.setWorldHeight(WORLD_SIZE);
@@ -126,6 +123,21 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 		} else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
 			viewport.setWorldHeight(worldHeight * 5f);
 			viewport.setWorldWidth(aspectRatio * (worldHeight * 5f));
+		}
+
+		Gdx.app.log("Zoom Factor", "" + zoomFactor);
+		//if (!isZoomAllowed()) return;
+
+		if (Gdx.input.isKeyPressed(Input.Keys.EQUALS) | Gdx.input.isKeyPressed(Input.Keys.PLUS)) {
+			if (isZoomInAllowed()) {
+				viewport.setWorldHeight(worldHeight - CAMERA_MOVEMENT_AMOUNT * deltaTime * zoomFactor);
+				viewport.setWorldWidth(aspectRatio * (worldHeight - CAMERA_MOVEMENT_AMOUNT * deltaTime * zoomFactor));
+			}
+		} else if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
+			if (isZoomOutAllowed()) {
+				viewport.setWorldHeight(worldHeight + CAMERA_MOVEMENT_AMOUNT * deltaTime * zoomFactor);
+				viewport.setWorldWidth(aspectRatio * (worldHeight + CAMERA_MOVEMENT_AMOUNT * deltaTime * zoomFactor));
+			}
 		}
 	}
 
@@ -138,10 +150,10 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
         return super.pan(x, y, deltaX, deltaY);
     }
 
-	Vector2 flingVelocity = new Vector2(0, 0);
-	Vector2 flingAcceleration = new Vector2(0, 0);
-	long flingStartTime = 0;
-	double flingEndTime = 0;
+	private Vector2 flingVelocity = new Vector2(0, 0);
+	private Vector2 flingAcceleration = new Vector2(0, 0);
+	private long flingStartTime = 0;
+	private double flingEndTime = 0;
 
 	@Override
 	public boolean fling(float velocityX, float velocityY, int button) {
@@ -167,5 +179,39 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 		}
 	}
 
+	private boolean zoomStarted = false;
+	private float worldHeightZoomStarted = 0;
 
+	@Override
+	public boolean zoom(float initialDistance, float distance) {
+		float ratio = initialDistance / distance;
+
+		if (zoomStarted) {
+			if (!isZoomInAllowed()) if (ratio < 1) return true;
+			else if (!isZoomOutAllowed()) if (ratio >= 1) return true;
+
+			viewport.setWorldHeight(worldHeightZoomStarted * ratio);
+			viewport.setWorldWidth(aspectRatio * (worldHeightZoomStarted * ratio));
+		}
+		return super.zoom(initialDistance, distance);
+	}
+
+	private void isZoomStarted() {
+		if (Gdx.input.isTouched(0) & Gdx.input.isTouched(1)) {
+			if (!zoomStarted) {
+				worldHeightZoomStarted = viewport.getWorldHeight();
+			}
+			zoomStarted = true;
+		} else {
+			zoomStarted = false;
+		}
+	}
+
+	private boolean isZoomInAllowed() {
+		return zoomFactor >= MIN_ZOOM_FACTOR;
+	}
+
+	private boolean isZoomOutAllowed() {
+		return zoomFactor <= MAX_ZOOM_FACTOR;
+	}
 }
