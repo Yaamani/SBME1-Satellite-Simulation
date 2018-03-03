@@ -13,6 +13,7 @@ public class AndroidLauncher extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		initialize(new SatelliteSimulationGame(), config);
 
+		config.hideStatusBar = true;
 		config.useImmersiveMode = true;
 	}
 }

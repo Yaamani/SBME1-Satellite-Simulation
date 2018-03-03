@@ -20,6 +20,9 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 	private ShapeRenderer shapeRenderer;
 	private ExtendViewport viewport;
 
+	private float zoomFactor = 0;
+	private float screenToWorldRatio = 0;
+
 	@Override
 	public void create () {
 		viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
@@ -51,6 +54,9 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		zoomFactor = viewport.getWorldHeight() / WORLD_SIZE;
+		screenToWorldRatio = WORLD_SIZE / viewport.getScreenHeight();
 
 		keyboardControls();
 		flingReleased();
@@ -117,14 +123,15 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 			viewport.setWorldWidth(aspectRatio * WORLD_SIZE);
 		} else if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
 			Gdx.app.log("CameraPos", "" + cameraPos);
+		} else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+			viewport.setWorldHeight(worldHeight * 5f);
+			viewport.setWorldWidth(aspectRatio * (worldHeight * 5f));
 		}
 	}
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         Vector3 cameraPos = viewport.getCamera().position;
-		float zoomFactor = viewport.getWorldHeight() / WORLD_SIZE;
-		float screenToWorldRatio = viewport.getWorldHeight() / viewport.getScreenHeight();
 
         cameraPos.set(cameraPos.x - deltaX * zoomFactor * screenToWorldRatio, cameraPos.y + deltaY * zoomFactor * screenToWorldRatio, 0);
         Gdx.app.log("pan", "x = " + x + ", y = " + y);
@@ -138,13 +145,13 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 
 	@Override
 	public boolean fling(float velocityX, float velocityY, int button) {
-		float screenToWorldRatio = viewport.getWorldHeight() / viewport.getScreenHeight();
-		flingVelocity = new Vector2(screenToWorldRatio * velocityX / FLING_VELOCITY_DIVIDER, screenToWorldRatio * velocityY / FLING_VELOCITY_DIVIDER);
+
+		flingVelocity = new Vector2(zoomFactor * screenToWorldRatio * velocityX / FLING_VELOCITY_DIVIDER,zoomFactor * screenToWorldRatio * velocityY / FLING_VELOCITY_DIVIDER);
 		flingStartTime = TimeUtils.nanoTime();
 
 		double velocityNormalized = flingVelocity.len();
-		Vector2 velocityUnit = new Vector2(flingVelocity.x / (float)velocityNormalized, flingVelocity.y / (float) velocityNormalized);
-		flingAcceleration = new Vector2(velocityUnit.x * FLING_ACCELERATION, velocityUnit.y * FLING_ACCELERATION);
+		Vector2 velocityUnit = new Vector2(flingVelocity.x / (float) velocityNormalized, flingVelocity.y / (float) velocityNormalized);
+		flingAcceleration = new Vector2(velocityUnit.x * FLING_ACCELERATION * zoomFactor * screenToWorldRatio , velocityUnit.y * FLING_ACCELERATION * zoomFactor * screenToWorldRatio);
 		double accelerationNormalized = -flingAcceleration.len();
 		flingEndTime = -velocityNormalized / accelerationNormalized; //t = -vi/a when vf = 0
 
