@@ -1,21 +1,20 @@
 package com.yaamani.satellitesimulation;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import static com.yaamani.satellitesimulation.Constants.*;
 
-public class SatelliteSimulationGame implements ApplicationListener {
+public class SatelliteSimulationGame extends GestureAdapter implements ApplicationListener {
 	private ShapeRenderer shapeRenderer;
 	private ExtendViewport viewport;
 
@@ -24,11 +23,22 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
+
+		Gdx.input.setInputProcessor(new GestureDetector(this));
 	}
 
 	@Override
 	public void resize(int width, int height) {
+		float currentWorldHeight = viewport.getWorldHeight();
+
 		viewport.update(width, height, false);
+
+		if (currentWorldHeight != 0)  {
+			float aspectRatio = viewport.getWorldWidth() / viewport.getWorldHeight();
+			float worldHeight = viewport.getWorldHeight();
+
+			viewport.setWorldSize(aspectRatio * currentWorldHeight, currentWorldHeight);
+		}
 	}
 
 	@Override
@@ -36,7 +46,7 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		keybordControls();
+		keyboardControls();
 
 		viewport.apply();
 
@@ -69,7 +79,7 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		shapeRenderer.dispose();
 	}
 
-	private void keybordControls() {
+	private void keyboardControls() {
 		Vector3 cameraPos = viewport.getCamera().position;
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			cameraPos.set(cameraPos.x - CAMERA_MOVEMENT_AMOUNT, cameraPos.y, cameraPos.z);
@@ -98,4 +108,6 @@ public class SatelliteSimulationGame implements ApplicationListener {
 			viewport.setWorldWidth(aspectRatio * WORLD_SIZE);
 		}
 	}
+
+
 }
