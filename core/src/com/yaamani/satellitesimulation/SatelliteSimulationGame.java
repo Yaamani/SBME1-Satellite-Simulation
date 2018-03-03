@@ -1,6 +1,7 @@
 package com.yaamani.satellitesimulation;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -14,9 +15,9 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import static com.yaamani.satellitesimulation.Constants.*;
 
-public class SatelliteSimulationGame extends ApplicationAdapter {
-	ShapeRenderer shapeRenderer;
-	ExtendViewport viewport;
+public class SatelliteSimulationGame implements ApplicationListener {
+	private ShapeRenderer shapeRenderer;
+	private ExtendViewport viewport;
 
 	@Override
 	public void create () {
@@ -35,6 +36,8 @@ public class SatelliteSimulationGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		keybordControls();
+
 		viewport.apply();
 
 		shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
@@ -50,9 +53,33 @@ public class SatelliteSimulationGame extends ApplicationAdapter {
 
 		shapeRenderer.end();
 	}
-	
+
+	@Override
+	public void pause() {
+
+	}
+
+	@Override
+	public void resume() {
+
+	}
+
 	@Override
 	public void dispose () {
 		shapeRenderer.dispose();
+	}
+
+	private void keybordControls() {
+		Vector3 cameraPos = viewport.getCamera().position;
+		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+			cameraPos.set(cameraPos.x - CAMERA_MOVEMENT_AMOUNT, cameraPos.y, cameraPos.z);
+		} else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+			cameraPos.set(cameraPos.x + CAMERA_MOVEMENT_AMOUNT, cameraPos.y, cameraPos.z);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+			cameraPos.set(cameraPos.x, cameraPos.y - CAMERA_MOVEMENT_AMOUNT, cameraPos.z);
+		} else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+			cameraPos.set(cameraPos.x, cameraPos.y + CAMERA_MOVEMENT_AMOUNT, cameraPos.z);
+		}
 	}
 }
