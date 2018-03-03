@@ -53,6 +53,7 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		keyboardControls();
+		flingReleased();
 
 		viewport.apply();
 
@@ -129,4 +130,35 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
         Gdx.app.log("pan", "x = " + x + ", y = " + y);
         return super.pan(x, y, deltaX, deltaY);
     }
+
+	Vector2 flingVelocity = new Vector2(0, 0);
+	Vector2 flingAcceleration = new Vector2(0, 0);
+	long flingStartTime = 0;
+	double flingEndTime = 0;
+
+	@Override
+	public boolean fling(float velocityX, float velocityY, int button) {
+		float screenToWorldRatio = viewport.getWorldHeight() / viewport.getScreenHeight();
+		flingVelocity = new Vector2(screenToWorldRatio * velocityX / FLING_VELOCITY_DIVIDER, screenToWorldRatio * velocityY / FLING_VELOCITY_DIVIDER);
+		flingStartTime = TimeUtils.nanoTime();
+
+		double velocityNormalized = flingVelocity.len();
+		Vector2 velocityUnit = new Vector2(flingVelocity.x / (float)velocityNormalized, flingVelocity.y / (float) velocityNormalized);
+		flingAcceleration = new Vector2(velocityUnit.x * FLING_ACCELERATION, velocityUnit.y * FLING_ACCELERATION);
+		double accelerationNormalized = -flingAcceleration.len();
+		flingEndTime = -velocityNormalized / accelerationNormalized; //t = -vi/a when vf = 0
+
+		Gdx.app.log("Fling", "velocityNormalized = " + velocityNormalized + ", accelerationNormalized = " + accelerationNormalized + ", velocity = " + flingVelocity + ", acceleration = " + flingAcceleration+ ", startTime = " + flingStartTime + ", endTime = " + flingEndTime);
+		return super.fling(velocityX, velocityY, button);
+	}
+
+	private void flingReleased() {
+		if (MathUtils.nanoToSec * (TimeUtils.nanoTime() - flingStartTime) <= flingEndTime) {
+			Vector3 cameraPos = viewport.getCamera().position;
+			flingVelocity.add(new Vector2(flingAcceleration.x * Gdx.graphics.getDeltaTime(), flingAcceleration.y * Gdx.graphics.getDeltaTime()));
+			cameraPos.set(cameraPos.x - flingVelocity.x, cameraPos.y + flingVelocity.y, 0);
+		}
+	}
+
+
 }
