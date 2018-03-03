@@ -2,6 +2,9 @@ package com.yaamani.satellitesimulation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -15,7 +18,7 @@ import static com.yaamani.satellitesimulation.Constants.*;
  * Created by mahmo on 03/03/2018.
  */
 
-public class Controls implements GestureListener {
+public class Controls implements GestureListener, InputProcessor {
     private ExtendViewport viewport;
 
     private float zoomFactor = 0;
@@ -24,8 +27,13 @@ public class Controls implements GestureListener {
     private float aspectRatio = 0;
     private float worldHeight = 0;
 
+    private InputMultiplexer multiplexer;
+
     public Controls(ExtendViewport viewport) {
         this.viewport = viewport;
+
+        multiplexer = new InputMultiplexer(this, new GestureDetector(this));
+        Gdx.input.setInputProcessor(multiplexer);
     }
 
     public void update() {
@@ -59,27 +67,22 @@ public class Controls implements GestureListener {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             cameraPos.set(0, 0, 0);
-            viewport.setWorldHeight(WORLD_SIZE);
-            viewport.setWorldWidth(aspectRatio * WORLD_SIZE);
+            zoom(WORLD_SIZE);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             Gdx.app.log("CameraPos", "" + cameraPos);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            viewport.setWorldHeight(worldHeight * 5f);
-            viewport.setWorldWidth(aspectRatio * (worldHeight * 5f));
+            zoom(worldHeight * 5.0f);
         }
 
-        Gdx.app.log("Zoom Factor", "" + zoomFactor);
-        //if (!isZoomAllowed()) return;
+        //Gdx.app.log("Zoom Factor", "" + zoomFactor);
 
         if (Gdx.input.isKeyPressed(Input.Keys.EQUALS) | Gdx.input.isKeyPressed(Input.Keys.PLUS)) {
             if (isZoomInAllowed()) {
-                viewport.setWorldHeight(worldHeight - CAMERA_MOVEMENT_AMOUNT * deltaTime * zoomFactor);
-                viewport.setWorldWidth(aspectRatio * (worldHeight - CAMERA_MOVEMENT_AMOUNT * deltaTime * zoomFactor));
+                zoom(worldHeight - CAMERA_MOVEMENT_AMOUNT * deltaTime * zoomFactor);
             }
         } else if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
             if (isZoomOutAllowed()) {
-                viewport.setWorldHeight(worldHeight + CAMERA_MOVEMENT_AMOUNT * deltaTime * zoomFactor);
-                viewport.setWorldWidth(aspectRatio * (worldHeight + CAMERA_MOVEMENT_AMOUNT * deltaTime * zoomFactor));
+                zoom(worldHeight + CAMERA_MOVEMENT_AMOUNT * deltaTime * zoomFactor);
             }
         }
     }
@@ -104,7 +107,7 @@ public class Controls implements GestureListener {
 
         flingEndTime = -velocityNormalized / accelerationNormalized; //t = -vi/a when vf = 0
 
-        Gdx.app.log("Fling", "velocityNormalized = " + velocityNormalized + ", accelerationNormalized = " + accelerationNormalized + ", velocity = " + flingVelocity + ", acceleration = " + flingAcceleration+ ", startTime = " + flingStartTime + ", endTime = " + flingEndTime);
+        //Gdx.app.log("Fling", "velocityNormalized = " + velocityNormalized + ", accelerationNormalized = " + accelerationNormalized + ", velocity = " + flingVelocity + ", acceleration = " + flingAcceleration+ ", startTime = " + flingStartTime + ", endTime = " + flingEndTime);
         return false;
     }
 
@@ -125,7 +128,7 @@ public class Controls implements GestureListener {
         Vector3 cameraPos = viewport.getCamera().position;
 
         cameraPos.set(cameraPos.x - deltaX * zoomFactor * screenToWorldRatio, cameraPos.y + deltaY * zoomFactor * screenToWorldRatio, 0);
-        Gdx.app.log("pan", "x = " + x + ", y = " + y);
+        //Gdx.app.log("pan", "x = " + x + ", y = " + y);
         return false;
     }
 
@@ -139,12 +142,11 @@ public class Controls implements GestureListener {
         float ratio = initialDistance / distance;
 
         if (zoomStarted) {
-            Gdx.app.log("Zoom Ratio", "" + ratio);
+            //Gdx.app.log("Zoom Ratio", "" + ratio);
             if (!isZoomOutAllowed()) if (ratio > 1) return false;
             if (!isZoomInAllowed()) if (ratio < 1) return false;
 
-            viewport.setWorldHeight(worldHeightZoomStarted * ratio);
-            viewport.setWorldWidth(aspectRatio * (worldHeightZoomStarted * ratio));
+            zoom(worldHeightZoomStarted * ratio);
         }
         return false;
     }
@@ -160,6 +162,24 @@ public class Controls implements GestureListener {
         }
     }
 
+    //---------------------------- MOUSE WHEEL ZOOM ---------------------------------
+
+    @Override
+    public boolean scrolled(int amount) {
+        if (!isZoomOutAllowed()) if (amount >= 1) return false;
+        if (!isZoomInAllowed()) if (amount < 1) return false;
+
+        zoom(worldHeight + worldHeight * amount * MOUSE_WHEEL_SENSITIVITY);
+        Gdx.app.log("Mouse Wheel", "" + amount);
+        return false;
+    }
+
+    // -------------------- Zoom Func ------------------------
+    private void zoom(float height) {
+        viewport.setWorldHeight(height);
+        viewport.setWorldWidth(aspectRatio * (height));
+    }
+
     private boolean isZoomInAllowed() {
         return zoomFactor >= MIN_ZOOM_FACTOR;
     }
@@ -167,8 +187,6 @@ public class Controls implements GestureListener {
     private boolean isZoomOutAllowed() {
         return zoomFactor <= MAX_ZOOM_FACTOR;
     }
-
-
 
 
 
@@ -210,6 +228,41 @@ public class Controls implements GestureListener {
 
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
         return false;
     }
 }
