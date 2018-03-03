@@ -6,5 +6,5 @@ package com.yaamani.satellitesimulation;
 
 public class Constants {
     public static final float WORLD_SIZE = 512.0f;
-    public static final float CAMERA_MOVEMENT_AMOUNT = 4.0f;
+    public static final float CAMERA_MOVEMENT_AMOUNT = 250f;
 }

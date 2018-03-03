@@ -84,26 +84,28 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 	}
 
 	private void keyboardControls() {
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		
 		Vector3 cameraPos = viewport.getCamera().position;
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			cameraPos.set(cameraPos.x - CAMERA_MOVEMENT_AMOUNT, cameraPos.y, cameraPos.z);
+			cameraPos.set(cameraPos.x - CAMERA_MOVEMENT_AMOUNT * deltaTime, cameraPos.y, cameraPos.z);
 		} else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			cameraPos.set(cameraPos.x + CAMERA_MOVEMENT_AMOUNT, cameraPos.y, cameraPos.z);
+			cameraPos.set(cameraPos.x + CAMERA_MOVEMENT_AMOUNT * deltaTime, cameraPos.y, cameraPos.z);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			cameraPos.set(cameraPos.x, cameraPos.y - CAMERA_MOVEMENT_AMOUNT, cameraPos.z);
+			cameraPos.set(cameraPos.x, cameraPos.y - CAMERA_MOVEMENT_AMOUNT * deltaTime, cameraPos.z);
 		} else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			cameraPos.set(cameraPos.x, cameraPos.y + CAMERA_MOVEMENT_AMOUNT, cameraPos.z);
+			cameraPos.set(cameraPos.x, cameraPos.y + CAMERA_MOVEMENT_AMOUNT * deltaTime, cameraPos.z);
 		}
 
 		float aspectRatio = viewport.getWorldWidth() / viewport.getWorldHeight();
 		float worldHeight = viewport.getWorldHeight();
 		if (Gdx.input.isKeyPressed(Input.Keys.EQUALS) | Gdx.input.isKeyPressed(Input.Keys.PLUS)) {
-			viewport.setWorldHeight(worldHeight - CAMERA_MOVEMENT_AMOUNT);
-			viewport.setWorldWidth(aspectRatio * (worldHeight - CAMERA_MOVEMENT_AMOUNT));
+			viewport.setWorldHeight(worldHeight - CAMERA_MOVEMENT_AMOUNT * deltaTime);
+			viewport.setWorldWidth(aspectRatio * (worldHeight - CAMERA_MOVEMENT_AMOUNT * deltaTime));
 		} else if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
-			viewport.setWorldHeight(worldHeight + CAMERA_MOVEMENT_AMOUNT);
-			viewport.setWorldWidth(aspectRatio * (worldHeight + CAMERA_MOVEMENT_AMOUNT));
+			viewport.setWorldHeight(worldHeight + CAMERA_MOVEMENT_AMOUNT * deltaTime);
+			viewport.setWorldWidth(aspectRatio * (worldHeight + CAMERA_MOVEMENT_AMOUNT * deltaTime));
 		}
 
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
@@ -121,4 +123,6 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
         cameraPos.set(cameraPos.x - deltaX * zoomFactor, cameraPos.y + deltaY * zoomFactor, 0);
         return super.pan(x, y, deltaX, deltaY);
     }
+
+
 }
