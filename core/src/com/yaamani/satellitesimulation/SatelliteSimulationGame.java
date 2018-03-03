@@ -113,5 +113,12 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 		}
 	}
 
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        Vector3 cameraPos = viewport.getCamera().position;
+		float zoomFactor = viewport.getWorldHeight() / WORLD_SIZE;
 
+        cameraPos.set(cameraPos.x - deltaX * zoomFactor, cameraPos.y + deltaY * zoomFactor, 0);
+        return super.pan(x, y, deltaX, deltaY);
+    }
 }
