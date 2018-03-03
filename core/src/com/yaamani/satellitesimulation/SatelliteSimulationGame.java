@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import static com.yaamani.satellitesimulation.Constants.*;
@@ -16,6 +15,7 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 	private Controls controls;
 
+	private Satellite mySatellite;
 
 	@Override
 	public void create () {
@@ -25,7 +25,7 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 		controls = new Controls(viewport);
 
-
+		mySatellite = new Satellite(WORLD_SIZE / 100, Color.WHITE);
 	}
 
 	@Override
@@ -40,7 +40,6 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 		if (currentWorldHeight != 0)  {
 			float aspectRatio = viewport.getWorldWidth() / viewport.getWorldHeight();
-			float worldHeight = viewport.getWorldHeight();
 
 			viewport.setWorldSize(aspectRatio * currentWorldHeight, currentWorldHeight);
 		}
@@ -60,11 +59,10 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		shapeRenderer.begin();
 		shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
-		shapeRenderer.setColor(Color.DARK_GRAY);
-		shapeRenderer.rect(-WORLD_SIZE, -WORLD_SIZE, WORLD_SIZE, WORLD_SIZE);
-
 		shapeRenderer.setColor(Color.SKY);
-		shapeRenderer.circle(0, 0, WORLD_SIZE/10);
+		shapeRenderer.circle(0, 0, WORLD_SIZE/10, 45);
+
+		mySatellite.render(shapeRenderer);
 
 		shapeRenderer.end();
 	}

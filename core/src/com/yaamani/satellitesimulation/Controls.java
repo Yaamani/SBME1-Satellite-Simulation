@@ -27,12 +27,10 @@ public class Controls implements GestureListener, InputProcessor {
     private float aspectRatio = 0;
     private float worldHeight = 0;
 
-    private InputMultiplexer multiplexer;
-
     public Controls(ExtendViewport viewport) {
         this.viewport = viewport;
 
-        multiplexer = new InputMultiplexer(this, new GestureDetector(this));
+        InputMultiplexer multiplexer = new InputMultiplexer(this, new GestureDetector(this));
         Gdx.input.setInputProcessor(multiplexer);
     }
 
@@ -96,13 +94,16 @@ public class Controls implements GestureListener, InputProcessor {
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
-        flingVelocity = new Vector2(zoomFactor * screenToWorldRatio * velocityX / FLING_VELOCITY_DIVIDER,zoomFactor * screenToWorldRatio * velocityY / FLING_VELOCITY_DIVIDER);
+        flingVelocity = new Vector2(zoomFactor * screenToWorldRatio * velocityX / FLING_VELOCITY_DIVIDER,
+                                    zoomFactor * screenToWorldRatio * velocityY / FLING_VELOCITY_DIVIDER);
         flingStartTime = TimeUtils.nanoTime();
 
         double velocityNormalized = flingVelocity.len();
-        Vector2 velocityUnit = new Vector2(flingVelocity.x / (float) velocityNormalized, flingVelocity.y / (float) velocityNormalized);
+        Vector2 velocityUnit = new Vector2(flingVelocity.x / (float) velocityNormalized,
+                                            flingVelocity.y / (float) velocityNormalized);
 
-        flingAcceleration = new Vector2(velocityUnit.x * FLING_ACCELERATION * zoomFactor * screenToWorldRatio , velocityUnit.y * FLING_ACCELERATION * zoomFactor * screenToWorldRatio);
+        flingAcceleration = new Vector2(velocityUnit.x * FLING_ACCELERATION * zoomFactor * screenToWorldRatio ,
+                                        velocityUnit.y * FLING_ACCELERATION * zoomFactor * screenToWorldRatio);
         double accelerationNormalized = -flingAcceleration.len();
 
         flingEndTime = -velocityNormalized / accelerationNormalized; //t = -vi/a when vf = 0
@@ -115,9 +116,11 @@ public class Controls implements GestureListener, InputProcessor {
         if (MathUtils.nanoToSec * (TimeUtils.nanoTime() - flingStartTime) <= flingEndTime) {
             Vector3 cameraPos = viewport.getCamera().position;
 
-            flingVelocity.add(new Vector2(flingAcceleration.x * Gdx.graphics.getDeltaTime(), flingAcceleration.y * Gdx.graphics.getDeltaTime()));
+            flingVelocity.add(new Vector2(flingAcceleration.x * Gdx.graphics.getDeltaTime(),
+                                            flingAcceleration.y * Gdx.graphics.getDeltaTime()));
 
-            cameraPos.set(cameraPos.x - flingVelocity.x, cameraPos.y + flingVelocity.y, 0);
+            cameraPos.set(cameraPos.x - flingVelocity.x,
+                            cameraPos.y + flingVelocity.y, 0);
         }
     }
 
@@ -170,7 +173,7 @@ public class Controls implements GestureListener, InputProcessor {
         if (!isZoomInAllowed()) if (amount < 1) return false;
 
         zoom(worldHeight + worldHeight * amount * MOUSE_WHEEL_SENSITIVITY);
-        Gdx.app.log("Mouse Wheel", "" + amount);
+        //Gdx.app.log("Mouse Wheel", "" + amount);
         return false;
     }
 
