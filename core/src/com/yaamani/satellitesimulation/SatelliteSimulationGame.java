@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import static com.yaamani.satellitesimulation.Constants.*;
@@ -112,6 +114,8 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
 			cameraPos.set(0, 0, 0);
 			viewport.setWorldHeight(WORLD_SIZE);
 			viewport.setWorldWidth(aspectRatio * WORLD_SIZE);
+		} else if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+			Gdx.app.log("CameraPos", "" + cameraPos);
 		}
 	}
 
@@ -119,10 +123,10 @@ public class SatelliteSimulationGame extends GestureAdapter implements Applicati
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         Vector3 cameraPos = viewport.getCamera().position;
 		float zoomFactor = viewport.getWorldHeight() / WORLD_SIZE;
+		float screenToWorldRatio = viewport.getWorldHeight() / viewport.getScreenHeight();
 
-        cameraPos.set(cameraPos.x - deltaX * zoomFactor, cameraPos.y + deltaY * zoomFactor, 0);
+        cameraPos.set(cameraPos.x - deltaX * zoomFactor * screenToWorldRatio, cameraPos.y + deltaY * zoomFactor * screenToWorldRatio, 0);
+        Gdx.app.log("pan", "x = " + x + ", y = " + y);
         return super.pan(x, y, deltaX, deltaY);
     }
-
-
 }
