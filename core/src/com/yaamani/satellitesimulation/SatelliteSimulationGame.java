@@ -81,5 +81,21 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		} else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 			cameraPos.set(cameraPos.x, cameraPos.y + CAMERA_MOVEMENT_AMOUNT, cameraPos.z);
 		}
+
+		float aspectRatio = viewport.getWorldWidth() / viewport.getWorldHeight();
+		float worldHeight = viewport.getWorldHeight();
+		if (Gdx.input.isKeyPressed(Input.Keys.EQUALS) | Gdx.input.isKeyPressed(Input.Keys.PLUS)) {
+			viewport.setWorldHeight(worldHeight - CAMERA_MOVEMENT_AMOUNT);
+			viewport.setWorldWidth(aspectRatio * (worldHeight - CAMERA_MOVEMENT_AMOUNT));
+		} else if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
+			viewport.setWorldHeight(worldHeight + CAMERA_MOVEMENT_AMOUNT);
+			viewport.setWorldWidth(aspectRatio * (worldHeight + CAMERA_MOVEMENT_AMOUNT));
+		}
+
+		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+			cameraPos.set(0, 0, 0);
+			viewport.setWorldHeight(WORLD_SIZE);
+			viewport.setWorldWidth(aspectRatio * WORLD_SIZE);
+		}
 	}
 }
