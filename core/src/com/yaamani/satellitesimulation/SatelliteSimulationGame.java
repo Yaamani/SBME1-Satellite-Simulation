@@ -60,7 +60,7 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
 		shapeRenderer.setColor(Color.SKY);
-		shapeRenderer.circle(0, 0, WORLD_SIZE/10, 45);
+		shapeRenderer.circle(0, 0, 6371, 45);
 
 		mySatellite.render(shapeRenderer);
 

@@ -7,6 +7,9 @@ import com.yaamani.satellitesimulation.SatelliteSimulationGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+
+		config.samples = 4;
+
 		new LwjglApplication(new SatelliteSimulationGame(), config);
 	}
 }

@@ -26,7 +26,6 @@ public class Satellite {
     private final double G = 6.674E-11;
     private final double M = 5.972E24; //Mass of the Earth
 
-    private float orbitalRadiusInWorldUnits = WORLD_SIZE / 7;
 
     public Satellite(float radius, Color color) {
         this.radius = radius;
@@ -41,7 +40,7 @@ public class Satellite {
         shapeRenderer.set(ShapeRenderer.ShapeType.Line);
 
         shapeRenderer.setColor(Color.DARK_GRAY);
-        shapeRenderer.circle(0, 0, orbitalRadiusInWorldUnits, 60);
+        shapeRenderer.circle(0, 0, orbitalRadius, 60);
 
         shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -56,8 +55,8 @@ public class Satellite {
     private void update() {
         theta = angularVelocity * (double) (TimeUtils.nanoTime() - startTime) * MathUtils.nanoToSec * 40/*To speed things up a bit*/;
 
-        position.set(orbitalRadiusInWorldUnits * (float) Math.cos(theta), orbitalRadiusInWorldUnits * (float) Math.sin(theta));
+        position.set(orbitalRadius * (float) Math.cos(theta), orbitalRadius * (float) Math.sin(theta));
 
-        Gdx.app.log("Satellite", "angularVelocity = " + angularVelocity + ", theta = " + theta + ", position = " + position + ", TimeUtils.millis() = " + TimeUtils.millis() + ", startTime = " + startTime);
+//        Gdx.app.log("Satellite", "angularVelocity = " + angularVelocity + ", theta = " + theta + ", position = " + position + ", TimeUtils.millis() = " + TimeUtils.millis() + ", startTime = " + startTime);
     }
 }
