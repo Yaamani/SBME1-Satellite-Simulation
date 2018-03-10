@@ -27,6 +27,9 @@ public class Controls implements GestureListener, InputProcessor {
     private float aspectRatio = 0;
     private float worldHeight = 0;
 
+    private float yLimit;
+    private float xLimit;
+
     public Controls(ExtendViewport viewport) {
         this.viewport = viewport;
 
@@ -41,6 +44,9 @@ public class Controls implements GestureListener, InputProcessor {
         aspectRatio = viewport.getWorldWidth() / viewport.getWorldHeight();
         worldHeight = viewport.getWorldHeight();
 
+        yLimit = (WORLD_SIZE / 2) * MAX_ZOOM_FACTOR;
+        xLimit = (WORLD_SIZE * aspectRatio / 2) * MAX_ZOOM_FACTOR;
+
         keyboardControls();
         flingReleased();
         isZoomStarted();
@@ -51,25 +57,28 @@ public class Controls implements GestureListener, InputProcessor {
     private void keyboardControls() {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
+        short horizontalAxis = 0;
+        short verticalAxis = 0;
+
         Vector3 cameraPos = viewport.getCamera().position;
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            cameraPos.set(cameraPos.x - CAMERA_MOVEMENT_AMOUNT * deltaTime, cameraPos.y, cameraPos.z);
+            horizontalAxis = -1;
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            cameraPos.set(cameraPos.x + CAMERA_MOVEMENT_AMOUNT * deltaTime, cameraPos.y, cameraPos.z);
+            horizontalAxis = 1;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            cameraPos.set(cameraPos.x, cameraPos.y - CAMERA_MOVEMENT_AMOUNT * deltaTime, cameraPos.z);
+            verticalAxis = -1;
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            cameraPos.set(cameraPos.x, cameraPos.y + CAMERA_MOVEMENT_AMOUNT * deltaTime, cameraPos.z);
+            verticalAxis = 1;
         }
+
+        cameraPos.set(cameraPos.x + CAMERA_MOVEMENT_AMOUNT * deltaTime * horizontalAxis, cameraPos.y + CAMERA_MOVEMENT_AMOUNT * deltaTime * verticalAxis, cameraPos.z);
+
+        cameraBoundaries(-horizontalAxis, verticalAxis);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             cameraPos.set(0, 0, 0);
             zoom(WORLD_SIZE);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-            Gdx.app.log("CameraPos", "" + cameraPos);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            zoom(worldHeight * 5.0f);
         }
 
         //Gdx.app.log("Zoom Factor", "" + zoomFactor);
@@ -121,6 +130,8 @@ public class Controls implements GestureListener, InputProcessor {
 
             cameraPos.set(cameraPos.x - flingVelocity.x,
                             cameraPos.y + flingVelocity.y, 0);
+
+            cameraBoundaries(flingVelocity.x, flingVelocity.y);
         }
     }
 
@@ -129,10 +140,29 @@ public class Controls implements GestureListener, InputProcessor {
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         Vector3 cameraPos = viewport.getCamera().position;
+        Gdx.app.log("pan", "WORLD_SIZE = " + WORLD_SIZE + ", worldHeight = " + worldHeight + ", cameraPos.x = " + cameraPos.x + ", cameraPos.y = " + cameraPos.y + ", deltaX = " + deltaX + ", deltaY = " + deltaY);
 
         cameraPos.set(cameraPos.x - deltaX * zoomFactor * screenToWorldRatio, cameraPos.y + deltaY * zoomFactor * screenToWorldRatio, 0);
-        //Gdx.app.log("pan", "x = " + x + ", y = " + y);
+
+        cameraBoundaries(deltaX, deltaY);
+
         return false;
+    }
+
+    private void cameraBoundaries(float deltaX, float deltaY) {
+        Vector3 cameraPos = viewport.getCamera().position;
+
+        if (deltaY < 0 & cameraPos.y <= -yLimit) {
+            cameraPos.y = -yLimit;
+        } else if (deltaY > 0 & cameraPos.y >= yLimit) {
+            cameraPos.y = yLimit;
+        }
+
+        if (deltaX > 0 & cameraPos.x <= -xLimit) {
+            cameraPos.x = -xLimit;
+        } else if (deltaX < 0 & cameraPos.x >= xLimit) {
+            cameraPos.x = xLimit;
+        }
     }
 
     // ---------------------------- ZOOM ---------------------------------
@@ -211,6 +241,10 @@ public class Controls implements GestureListener, InputProcessor {
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
+        Vector3 cameraPos = viewport.getCamera().position;
+
+        Gdx.app.log("tap", "cameraPos.x = " + cameraPos.x + ", cameraPos.y = " + cameraPos.y);
+
         return false;
     }
 

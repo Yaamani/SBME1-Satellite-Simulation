@@ -11,6 +11,8 @@ import static com.yaamani.satellitesimulation.Constants.*;
 
 public class SatelliteSimulationGame implements ApplicationListener {
 	private ShapeRenderer shapeRenderer;
+
+	private ExtendViewport staticViewport; // doesn't respond to camera movement
 	private ExtendViewport viewport;
 
 	private Controls controls;
@@ -19,7 +21,9 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 	@Override
 	public void create () {
+		staticViewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 		viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
+
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
 
@@ -30,17 +34,24 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
+		float currentWorldHeightStatic = staticViewport.getWorldHeight();
 	    float currentWorldHeight = viewport.getWorldHeight();
 
         if (height >= width) {
         	Gdx.graphics.setWindowedMode(height, height);
+        	staticViewport.update(height, height);
 			viewport.update(height,	height, false);
 		}
-        else viewport.update(width, height, false);
+        else {
+			staticViewport.update(width, height, false);
+			viewport.update(width, height, false);
+		}
 
 		if (currentWorldHeight != 0)  {
+			float aspectRatioStatic = staticViewport.getWorldWidth() / staticViewport.getWorldHeight();
 			float aspectRatio = viewport.getWorldWidth() / viewport.getWorldHeight();
 
+			staticViewport.setWorldSize(aspectRatioStatic * currentWorldHeightStatic, currentWorldHeightStatic);
 			viewport.setWorldSize(aspectRatio * currentWorldHeight, currentWorldHeight);
 		}
 	}
@@ -52,15 +63,20 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 		controls.update();
 
-		viewport.apply();
-
-		shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+		staticViewport.apply();
+		shapeRenderer.setProjectionMatrix(staticViewport.getCamera().combined);
 
 		shapeRenderer.begin();
 		shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
+		shapeRenderer.setColor(Color.MAROON);
+		shapeRenderer.rect(-WORLD_SIZE / 2, -WORLD_SIZE / 2, WORLD_SIZE, WORLD_SIZE);
+
+		viewport.apply();
+		shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+
 		shapeRenderer.setColor(Color.SKY);
-		shapeRenderer.circle(0, 0, 6371, 45);
+		shapeRenderer.circle(0, 0, WORLD_SIZE / 10/*6371*/, 45);
 
 		mySatellite.render(shapeRenderer);
 
