@@ -12,6 +12,6 @@ public class Constants {
     public static final float FLING_VELOCITY_DIVIDER = 70.0f;
 
     public static final float MAX_ZOOM_FACTOR = 2.0f;
-    public static final float MIN_ZOOM_FACTOR = 0.5f;
+    public static final float MIN_ZOOM_FACTOR = 0.3f;
     public static final float MOUSE_WHEEL_SENSITIVITY = 0.1f;
 }

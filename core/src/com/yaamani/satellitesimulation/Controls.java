@@ -33,8 +33,6 @@ public class Controls implements GestureListener, InputProcessor {
     public Controls(ExtendViewport viewport) {
         this.viewport = viewport;
 
-        InputMultiplexer multiplexer = new InputMultiplexer(this, new GestureDetector(this));
-        Gdx.input.setInputProcessor(multiplexer);
     }
 
     public void update() {
@@ -49,7 +47,7 @@ public class Controls implements GestureListener, InputProcessor {
 
         keyboardControls();
         flingReleased();
-        isZoomStarted();
+        isZoomPinchStarted();
     }
 
     // ---------------------------- KEYBOARD ---------------------------------
@@ -118,6 +116,7 @@ public class Controls implements GestureListener, InputProcessor {
         flingEndTime = -velocityNormalized / accelerationNormalized; //t = -vi/a when vf = 0
 
         //Gdx.app.log("Fling", "velocityNormalized = " + velocityNormalized + ", accelerationNormalized = " + accelerationNormalized + ", velocity = " + flingVelocity + ", acceleration = " + flingAcceleration+ ", startTime = " + flingStartTime + ", endTime = " + flingEndTime);
+        Gdx.app.log("Fling", "button = " + button);
         return false;
     }
 
@@ -140,7 +139,7 @@ public class Controls implements GestureListener, InputProcessor {
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         Vector3 cameraPos = viewport.getCamera().position;
-        Gdx.app.log("pan", "WORLD_SIZE = " + WORLD_SIZE + ", worldHeight = " + worldHeight + ", cameraPos.x = " + cameraPos.x + ", cameraPos.y = " + cameraPos.y + ", deltaX = " + deltaX + ", deltaY = " + deltaY);
+        //Gdx.app.log("pan", "WORLD_SIZE = " + WORLD_SIZE + ", worldHeight = " + worldHeight + ", cameraPos.x = " + cameraPos.x + ", cameraPos.y = " + cameraPos.y + ", deltaX = " + deltaX + ", deltaY = " + deltaY);
 
         cameraPos.set(cameraPos.x - deltaX * zoomFactor * screenToWorldRatio, cameraPos.y + deltaY * zoomFactor * screenToWorldRatio, 0);
 
@@ -149,33 +148,16 @@ public class Controls implements GestureListener, InputProcessor {
         return false;
     }
 
-    private void cameraBoundaries(float deltaX, float deltaY) {
-        Vector3 cameraPos = viewport.getCamera().position;
-
-        if (deltaY < 0 & cameraPos.y <= -yLimit) {
-            cameraPos.y = -yLimit;
-        } else if (deltaY > 0 & cameraPos.y >= yLimit) {
-            cameraPos.y = yLimit;
-        }
-
-        if (deltaX > 0 & cameraPos.x <= -xLimit) {
-            cameraPos.x = -xLimit;
-        } else if (deltaX < 0 & cameraPos.x >= xLimit) {
-            cameraPos.x = xLimit;
-        }
-    }
-
     // ---------------------------- ZOOM ---------------------------------
 
-    private boolean zoomStarted = false;
+    private boolean zoomPinchStarted = false;
     private float worldHeightZoomStarted = 0;
 
     @Override
     public boolean zoom(float initialDistance, float distance) {
         float ratio = initialDistance / distance;
 
-        if (zoomStarted) {
-            //Gdx.app.log("Zoom Ratio", "" + ratio);
+        if (zoomPinchStarted) {
             if (!isZoomOutAllowed()) if (ratio > 1) return false;
             if (!isZoomInAllowed()) if (ratio < 1) return false;
 
@@ -184,14 +166,14 @@ public class Controls implements GestureListener, InputProcessor {
         return false;
     }
 
-    private void isZoomStarted() {
+    private void isZoomPinchStarted() {
         if (Gdx.input.isTouched(0) & Gdx.input.isTouched(1)) {
-            if (!zoomStarted) {
+            if (!zoomPinchStarted) {
                 worldHeightZoomStarted = viewport.getWorldHeight();
             }
-            zoomStarted = true;
+            zoomPinchStarted = true;
         } else {
-            zoomStarted = false;
+            zoomPinchStarted = false;
         }
     }
 
@@ -199,8 +181,13 @@ public class Controls implements GestureListener, InputProcessor {
 
     @Override
     public boolean scrolled(int amount) {
-        if (!isZoomOutAllowed()) if (amount >= 1) return false;
-        if (!isZoomInAllowed()) if (amount < 1) return false;
+        if (!isZoomOutAllowed()) if (amount >= 1) {
+            return false;
+        }
+
+        if (!isZoomInAllowed()) if (amount < 1) {
+            return false;
+        }
 
         zoom(worldHeight + worldHeight * amount * MOUSE_WHEEL_SENSITIVITY);
         //Gdx.app.log("Mouse Wheel", "" + amount);
@@ -221,7 +208,23 @@ public class Controls implements GestureListener, InputProcessor {
         return zoomFactor <= MAX_ZOOM_FACTOR;
     }
 
+    // --------------------- Camera Boundaries -----------------
 
+    private void cameraBoundaries(float deltaX, float deltaY) {
+        Vector3 cameraPos = viewport.getCamera().position;
+
+        if (deltaY < 0 & cameraPos.y <= -yLimit) {
+            cameraPos.y = -yLimit;
+        } else if (deltaY > 0 & cameraPos.y >= yLimit) {
+            cameraPos.y = yLimit;
+        }
+
+        if (deltaX > 0 & cameraPos.x <= -xLimit) {
+            cameraPos.x = -xLimit;
+        } else if (deltaX < 0 & cameraPos.x >= xLimit) {
+            cameraPos.x = xLimit;
+        }
+    }
 
 
 
@@ -250,17 +253,55 @@ public class Controls implements GestureListener, InputProcessor {
 
     @Override
     public boolean longPress(float x, float y) {
+        viewport.getCamera().position.set(0, 0, 0);
+        zoom(WORLD_SIZE);
         return false;
     }
 
+    private int pinchCount = 0;
+    private Vector2 lastPointer1 = new Vector2(Vector2.Zero);
+    private Vector2 lastPointer2 = new Vector2(Vector2.Zero);
+    private long lastPinchTime = 0;
+    float deltaTime;
+    private float deltaX;
+    private float deltaY;
+
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        Gdx.app.log("Pinch parameters", "initialPointer = " + initialPointer1 + ", initialPointer2 = " + initialPointer2 +
+                ", pointer1 = " + pointer1 + ", lastPointer1 = " + lastPointer1 +
+                ", pointer2 = " + pointer2 + ", lastPointer2 = " + lastPointer2);
+
+        if(pinchCount == 0) {
+            lastPointer1.set(pointer1);
+            lastPointer2.set(pointer2);
+        } else {
+            deltaX = pointer1.x - lastPointer1.x;
+            deltaY = pointer1.y - lastPointer1.y;
+
+            deltaTime = (TimeUtils.nanoTime() - lastPinchTime) * MathUtils.nanoToSec;
+
+            pan(pointer1.x, pointer1.y, deltaX, deltaY);
+
+
+            //Gdx.app.log("Pinch average pointers - counter", "averageLastPointer = " + averageLastPointer + ", averagePointer = " + averagePointer + ", pinchCount = " + pinchCount);
+        }
+
+        lastPinchTime = TimeUtils.nanoTime();
+
+        lastPointer1.set(pointer1);
+        lastPointer2.set(pointer2);
+
+        pinchCount++;
+
         return false;
     }
 
     @Override
     public void pinchStop() {
-
+        //TODO: Fling when pinch stops.
+        Gdx.app.log("PinchStop", "Stopped");
+        pinchCount = 0;
     }
 
     @Override
