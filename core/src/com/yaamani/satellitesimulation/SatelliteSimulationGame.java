@@ -2,15 +2,18 @@ package com.yaamani.satellitesimulation;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import static com.yaamani.satellitesimulation.Constants.*;
 
 public class SatelliteSimulationGame implements ApplicationListener {
-	private ShapeRenderer shapeRenderer;
+	private MyShapeRenderer shapeRenderer;
 
 	private ExtendViewport staticViewport; // doesn't respond to camera movement
 	private ExtendViewport viewport;
@@ -19,17 +22,26 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 	private Satellite mySatellite;
 
+	private MyStage stage;
+
 	@Override
 	public void create () {
 		staticViewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 		viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 
-		shapeRenderer = new ShapeRenderer();
+		shapeRenderer = new MyShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
+
 
 		controls = new Controls(viewport);
 
-		mySatellite = new Satellite(WORLD_SIZE / 100, Color.WHITE);
+		mySatellite = new Satellite(WORLD_SIZE / 100, new Color(0xECF9FEFF));
+
+		stage = new MyStage(staticViewport); //For UI stuff
+		stage.setDebugAll(false);
+
+		InputMultiplexer multiplexer = new InputMultiplexer(stage, controls, new GestureDetector(controls));
+		Gdx.input.setInputProcessor(multiplexer);
 	}
 
 	@Override
@@ -39,11 +51,11 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
         if (height >= width) {
         	Gdx.graphics.setWindowedMode(height, height);
-        	staticViewport.update(height, height);
+        	staticViewport.update(height, height, true);
 			viewport.update(height,	height, false);
 		}
         else {
-			staticViewport.update(width, height, false);
+			staticViewport.update(width, height, true);
 			viewport.update(width, height, false);
 		}
 
@@ -63,14 +75,8 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 		controls.update();
 
-		staticViewport.apply();
-		shapeRenderer.setProjectionMatrix(staticViewport.getCamera().combined);
-
 		shapeRenderer.begin();
 		shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-
-		shapeRenderer.setColor(Color.MAROON);
-		shapeRenderer.rect(-WORLD_SIZE / 2, -WORLD_SIZE / 2, WORLD_SIZE, WORLD_SIZE);
 
 		viewport.apply();
 		shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
@@ -80,7 +86,21 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 		mySatellite.render(shapeRenderer);
 
+		staticViewport.apply();
+		shapeRenderer.setProjectionMatrix(staticViewport.getCamera().combined);
+
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+		shapeRenderer.setColor(1, 1, 1, .7f);
+		shapeRenderer.roundedRect(0, 0, WORLD_SIZE / 2, WORLD_SIZE / 10, WORLD_SIZE / 20);
+
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.draw();
+
 		shapeRenderer.end();
+
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	@Override
@@ -96,5 +116,6 @@ public class SatelliteSimulationGame implements ApplicationListener {
 	@Override
 	public void dispose () {
 		shapeRenderer.dispose();
+		stage.dispose();
 	}
 }
