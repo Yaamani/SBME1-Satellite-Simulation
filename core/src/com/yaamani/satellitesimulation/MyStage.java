@@ -37,9 +37,21 @@ public class MyStage extends Stage {
 
         timeLine.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("TimeLine", "Clicked");
-                super.clicked(event, x, y);
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                float shiftedX = x - timeLine.getKnob().getRadius();
+
+                Gdx.app.log("timeline touchDragged", "shiftedX = " + shiftedX + ", timeLine.getLine().getWidth() = " + timeLine.getLine().getWidth());
+
+                if (shiftedX > timeLine.getLine().getWidth()) {
+                    timeLine.setPercentage(1);
+                    super.touchDragged(event, x, y, pointer);
+                } else if (shiftedX < 0) {
+                    timeLine.setPercentage(0);
+                    super.touchDragged(event, x, y, pointer);
+                } else {
+                    timeLine.setPercentage(shiftedX / timeLine.getLine().getWidth());
+                    super.touchDragged(event, x, y, pointer);
+                }
             }
         });
 

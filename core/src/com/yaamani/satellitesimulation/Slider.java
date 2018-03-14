@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class Slider extends Group {
     private float percentage = 0; // 1 = 100%, 0 = 0%
 
     public Slider(MyShapeRenderer shapeRenderer,
-                  float lineWidth,
+                  final float lineWidth,
                   float lineHeight,
                   float knobRaduis,
                   Color lineColor,
@@ -46,21 +47,21 @@ public class Slider extends Group {
         knob.setBounds(0, 0, knob.getWidth(), knob.getHeight());
         knob.setPosition(0, 0);
 
-        knob.addListener(new ClickListener() {
+        /*knob.addListener(new ClickListener() {
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                Gdx.app.log("Knob TouchUp", "HI");
-                super.touchUp(event, x, y, pointer, button);
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                super.touchDragged(event, x, y, pointer);
             }
-        });
+        });*/
         /*knob.addListener(new ActorGestureListener() {
             @Override
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
-                knob.setPosition(knob.getX() + deltaX, knob.getY() + deltaY);
-                Gdx.app.log("Knob Pan", "Knob Pan");
+                percentage = x / (lineWidth - SLIDER_KNOB_RADUIS - getX());
+                Gdx.app.log("Knob Pan", "Knob Pan ..... , getX() = " + getX() + ", x = " + x);
                 super.pan(event, x, y, deltaX, deltaY);
             }
         });*/
+
     }
 
     public void onResize() {
@@ -82,13 +83,25 @@ public class Slider extends Group {
         divider.setPosition(line.getWidth() * dividingPercentage - divider.getWidth() / 2, getHeight() / 2 - divider.getHeight() / 2);
         divider.addTouchArea();
 
-        divider.touchArea.addListener(new ClickListener() {
+        /*divider.touchArea.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.log("Divider", "Clicked");
                 super.clicked(event, x, y);
             }
-        });
+        });*/
+    }
+
+    public Line getLine() {
+        return line;
+    }
+
+    public Knob getKnob() {
+        return knob;
+    }
+
+    public void setPercentage(float percentage) {
+        this.percentage = percentage;
     }
 
     @Override
@@ -103,7 +116,7 @@ public class Slider extends Group {
 
 
 
-    private class Line extends Actor {
+    public class Line extends Actor {
         private Color lineColor;
 
         private Line(float width, float height, Color lineColor) {
@@ -125,7 +138,7 @@ public class Slider extends Group {
 
 
 
-    private class Knob extends Actor {
+    public class Knob extends Actor {
 
         private Color knobColor;
 
@@ -141,8 +154,8 @@ public class Slider extends Group {
         public void draw(Batch batch, float parentAlpha) {
             shapeRenderer.setColor(knobColor);
             //shapeRenderer.setColor(1, 0, 0, .5f);
-            shapeRenderer.circle(getParent().getX() + getX(),
-                    getParent().getY() + getY(),
+            shapeRenderer.circle(getParent().getX() + getX() + radius,
+                    getParent().getY() + getY() + radius,
                     radius);
         }
 
@@ -150,14 +163,18 @@ public class Slider extends Group {
         public void act(float delta) {
             super.act(delta);
 
-            setPosition(percentage * line.getWidth() + radius, radius + line.getHeight() / 2);
+            setPosition(percentage * line.getWidth(), line.getHeight() / 2);
+        }
+
+        public float getRadius() {
+            return radius;
         }
     }
 
 
 
 
-    private class Divider extends Actor {
+    public class Divider extends Actor {
 
         private float dividingPercentage;
         private Color color;
