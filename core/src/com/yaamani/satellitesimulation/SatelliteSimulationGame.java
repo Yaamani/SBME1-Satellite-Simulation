@@ -37,7 +37,7 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 		mySatellite = new Satellite(WORLD_SIZE / 100, new Color(0xECF9FEFF));
 
-		stage = new MyStage(staticViewport); //For UI stuff
+		stage = new MyStage(staticViewport, shapeRenderer); //For UI stuff
 		stage.setDebugAll(false);
 
 		InputMultiplexer multiplexer = new InputMultiplexer(stage, controls, new GestureDetector(controls));
@@ -66,6 +66,8 @@ public class SatelliteSimulationGame implements ApplicationListener {
 			staticViewport.setWorldSize(aspectRatioStatic * currentWorldHeightStatic, currentWorldHeightStatic);
 			viewport.setWorldSize(aspectRatio * currentWorldHeight, currentWorldHeight);
 		}
+
+		stage.onResize();
 	}
 
 	@Override
@@ -91,9 +93,6 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-		shapeRenderer.setColor(1, 1, 1, .7f);
-		shapeRenderer.roundedRect(0, 0, WORLD_SIZE / 2, WORLD_SIZE / 10, WORLD_SIZE / 20);
 
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();

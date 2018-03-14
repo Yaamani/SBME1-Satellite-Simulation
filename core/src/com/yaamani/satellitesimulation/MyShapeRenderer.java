@@ -1,5 +1,6 @@
 package com.yaamani.satellitesimulation;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
@@ -17,7 +18,10 @@ class MyShapeRenderer extends ShapeRenderer { // part of it from   https://gamed
         if (width > height) smallerDimension = height;
         else smallerDimension = width;
 
-        if (radius * 2 > smallerDimension) correctedRaduis = smallerDimension / 2;
+        if (radius * 2 > smallerDimension) {
+            correctedRaduis = smallerDimension / 2;
+            Gdx.app.error("roundedRect", "Radius can't be bigger than the smaller dimension");
+        }
         // Central rectangle
         super.rect(x + correctedRaduis, y + correctedRaduis, width - 2*correctedRaduis, height - 2*correctedRaduis);
 

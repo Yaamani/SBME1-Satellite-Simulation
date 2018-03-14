@@ -14,4 +14,16 @@ public class Constants {
     public static final float MAX_ZOOM_FACTOR = 2.0f;
     public static final float MIN_ZOOM_FACTOR = 0.3f;
     public static final float MOUSE_WHEEL_SENSITIVITY = 0.1f;
+
+    public static final float SLIDER_LINE_WIDTH = WORLD_SIZE / 1.5f;
+    public static final float SLIDER_LINE_HEIGHT = WORLD_SIZE / 200;
+    public static final float SLIDER_KNOB_RADUIS = WORLD_SIZE / 50;
+    public static final float SLIDER_LINE_Y_POS = WORLD_SIZE / 12;
+    public static final float SLIDER_DIVIDER_WIDTH = SLIDER_LINE_HEIGHT;
+    public static final float SLIDER_DIVIDER_HEIGHT = SLIDER_KNOB_RADUIS * 2 + WORLD_SIZE / 100;
+    public static final int SLIDER_LINE_COLOR = 0xECF9FEFF;
+    public static final int SLIDER_KNOB_COLOR = 0x3F93B8FF;
+
+
+
 }
