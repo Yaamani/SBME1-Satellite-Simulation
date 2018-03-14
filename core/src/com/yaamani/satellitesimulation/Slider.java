@@ -80,6 +80,15 @@ public class Slider extends Group {
         divider.setSize(SLIDER_DIVIDER_WIDTH, SLIDER_DIVIDER_HEIGHT);
         divider.setBounds(0, 0, divider.getWidth(), divider.getHeight());
         divider.setPosition(line.getWidth() * dividingPercentage - divider.getWidth() / 2, getHeight() / 2 - divider.getHeight() / 2);
+        divider.addTouchArea();
+
+        divider.touchArea.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("Divider", "Clicked");
+                super.clicked(event, x, y);
+            }
+        });
     }
 
     @Override
@@ -152,16 +161,26 @@ public class Slider extends Group {
 
         private float dividingPercentage;
         private Color color;
+        private Actor touchArea;
 
         public Divider(float dividingPercentage) {
             this.dividingPercentage = dividingPercentage;
             color = new Color(SLIDER_LINE_COLOR);
         }
 
+        private void addTouchArea() {
+            touchArea = new Actor();
+            getParent().addActor(touchArea);
+            touchArea.setZIndex(1);
+            touchArea.setSize(line.getWidth() / 20, getHeight());
+            touchArea.setBounds(0, 0, touchArea.getWidth(), touchArea.getHeight());
+        }
+
         @Override
         public void draw(Batch batch, float parentAlpha) {
             shapeRenderer.setColor(color);
-            //shapeRenderer.setColor(0, 1, 0, .5f);
+            shapeRenderer.setColor(0, 1, 0, .5f);
+            shapeRenderer.rect(touchArea.getX() + getParent().getX(), touchArea.getY() + getParent().getY(), touchArea.getWidth(), touchArea.getHeight());
             shapeRenderer.roundedRect(getParent().getX() + getX(),
                     getParent().getY() + getY(),
                     getWidth() * getScaleX(),
@@ -175,6 +194,8 @@ public class Slider extends Group {
 
             setPosition(dividingPercentage * line.getWidth() + knob.getWidth() / 2 - getWidth() / 2,
                     getParent().getHeight() / 2 - getHeight() / 2 + line.getHeight() / 2);
+
+            touchArea.setPosition(getX() + getWidth() / 2 - touchArea.getWidth() / 2, getY());
         }
     }
 }
