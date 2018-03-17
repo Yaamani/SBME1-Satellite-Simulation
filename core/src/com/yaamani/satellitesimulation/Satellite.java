@@ -80,7 +80,7 @@ class CircularOrbit implements Orbit {
 
 
     public void updateSatellite(Satellite satellite) {
-        theta = angularVelocity * (double) (TimeUtils.nanoTime() - startTime) * MathUtils.nanoToSec;
+        theta = angularVelocity * (double) (TimeUtils.nanoTime() - startTime) * MathUtils.nanoToSec * 4000;
 
         satellite.setPosition(orbitalRadius * (float) Math.cos(theta), orbitalRadius * (float) Math.sin(theta));
     }
@@ -101,31 +101,38 @@ class EllipticalOrbit implements Orbit {
     private float e;
     private float a;
 
-    private final double c;
+    private final float c;
 
     private float startTime;
+
+    private float b;
 
     public EllipticalOrbit(float a, float e) {
         this.a = a;
         this.e = e;
 
-        c = Math.sqrt(((G*M) / (a*a*a)));
+        c = (float) Math.sqrt(((G*M) / (a*a*a)));
+
+        b = (float) (a*Math.sqrt(1-e*e));
     }
 
     @Override
     public void updateSatellite(Satellite satellite) {
 
         float t = (TimeUtils.nanoTime() - startTime) * MathUtils.nanoToSec;
-        float E = (float) (c * t + e * Math.sin((c * t)));
-        double theta = 2 * Math.atan(Math.sqrt((1+e)/(1-e)) * Math.tan(E/2));
+        float E = (float) (c * t + e * Math.sin((c * t))); //This is our solution to kepler equation
+        double theta = 2 * Math.atan(Math.sqrt((1+e)/(1-e)) * Math.tan(E/2)) * 4000;
         float r = (float) (a*(1-e*e) / (1+e*Math.cos((float)theta)));
 
-        satellite.setPosition((float) (r * Math.cos(theta)), (float) (r * Math.sin(theta)));
+
+        satellite.setPosition((float) (r * Math.cos(theta) + 2*a*e), (float) (r * Math.sin(theta))); //for some unknown reason i had to mave the ellipse a bit because the satellite didn't move as supposed to
     }
 
     @Override
     public void drawPath(ShapeRenderer shapeRenderer) {
-
+        shapeRenderer.setColor(Color.DARK_GRAY);
+        shapeRenderer.ellipse((a*e-a), -b, a*2, b*2, 50);
+//        shapeRenderer.ellipse(-WORLD_SIZE / 10, -WORLD_SIZE / 20, WORLD_SIZE / 5, WORLD_SIZE * (2.5f/10f));
     }
 
     @Override

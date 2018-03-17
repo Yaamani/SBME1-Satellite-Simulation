@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import static com.yaamani.satellitesimulation.Constants.*;
@@ -22,7 +23,9 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 	private Satellite mySatellite;
 	private Satellite mySatellite2;
+	private Satellite mySatellite3;
 	private CircularOrbit circularOrbit;
+	private CircularOrbit circularOrbit2;
 	private EllipticalOrbit ellipticalOrbit;
 
 	private MyStage stage;
@@ -40,12 +43,20 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 		mySatellite = new Satellite(WORLD_SIZE / 100, new Color(0xECF9FEFF));
 		mySatellite2 = new Satellite(WORLD_SIZE / 100, new Color(0xECF9FEFF));
+		mySatellite3 = new Satellite(WORLD_SIZE / 100, new Color(0xECF9FEFF));
 
 		circularOrbit = new CircularOrbit((2000+6371)*1000);
 		ellipticalOrbit = new EllipticalOrbit(25371000, 17000f/25371f);
+		circularOrbit2 = new CircularOrbit((36000+6371)*1000);
+
+
+		circularOrbit.setStartTime(TimeUtils.nanoTime());
+		ellipticalOrbit.setStartTime(TimeUtils.nanoTime());
+		circularOrbit2.setStartTime(TimeUtils.nanoTime());
 
 		mySatellite.setOrbit(ellipticalOrbit);
 		mySatellite2.setOrbit(circularOrbit);
+		mySatellite3.setOrbit(circularOrbit2);
 
 
 		stage = new MyStage(staticViewport, shapeRenderer); //For UI stuff
@@ -99,6 +110,7 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 		mySatellite.render(shapeRenderer);
 		mySatellite2.render(shapeRenderer);
+		mySatellite3.render(shapeRenderer);
 
 		staticViewport.apply();
 		shapeRenderer.setProjectionMatrix(staticViewport.getCamera().combined);
