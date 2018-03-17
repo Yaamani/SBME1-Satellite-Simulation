@@ -18,20 +18,11 @@ public class Satellite {
     private float radius;
     private Color color;
 
-    // -------- Orbit --------
-    private final float orbitalRadius = 2000 + 6371/*Earth's Radius*/; //KM
-    private float angularVelocity;
-    private double theta;
-
-    private final double G = 6.674E-11;
-    private final double M = 5.972E24; //Mass of the Earth
-
+    private Orbit currentOrbit;
 
     public Satellite(float radius, Color color) {
         this.radius = radius;
         this.color = color;
-
-        angularVelocity = (float) Math.sqrt(G * M / Math.pow(orbitalRadius * 1000, 3));
     }
 
     public void render(ShapeRenderer shapeRenderer) {
@@ -39,8 +30,7 @@ public class Satellite {
 
         shapeRenderer.set(ShapeRenderer.ShapeType.Line);
 
-        shapeRenderer.setColor(Color.DARK_GRAY);
-        shapeRenderer.circle(0, 0, orbitalRadius, 60);
+        if (currentOrbit != null) currentOrbit.drawPath(shapeRenderer);
 
         shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -50,13 +40,96 @@ public class Satellite {
 
     }
 
-    private final float startTime = TimeUtils.nanoTime();
-
     private void update() {
-        theta = angularVelocity * (double) (TimeUtils.nanoTime() - startTime) * MathUtils.nanoToSec * 40/*To speed things up a bit*/;
+        if (currentOrbit != null) currentOrbit.updateSatellite(this);
+    }
 
-        position.set(orbitalRadius * (float) Math.cos(theta), orbitalRadius * (float) Math.sin(theta));
+    public void setOrbit(Orbit orbit) {
+        orbit.setStartTime(TimeUtils.nanoTime());
+        this.currentOrbit = orbit;
+    }
 
-//        Gdx.app.log("Satellite", "angularVelocity = " + angularVelocity + ", theta = " + theta + ", position = " + position + ", TimeUtils.millis() = " + TimeUtils.millis() + ", startTime = " + startTime);
+    public void setPosition(float x, float y) {
+        this.position.set(x, y);
+    }
+}
+
+interface Orbit {
+    void updateSatellite(Satellite satellite);
+    void drawPath(ShapeRenderer shapeRenderer);
+    void setStartTime(long startTime);
+}
+
+
+
+
+
+
+class CircularOrbit implements Orbit {
+    private float orbitalRadius;
+    private float angularVelocity;
+    private double theta;
+
+    private long startTime;
+
+    public CircularOrbit(float orbitalRadius) {
+        this.orbitalRadius = orbitalRadius;
+        angularVelocity = (float) Math.sqrt(G * M / Math.pow(orbitalRadius, 3));
+    }
+
+
+
+    public void updateSatellite(Satellite satellite) {
+        theta = angularVelocity * (double) (TimeUtils.nanoTime() - startTime) * MathUtils.nanoToSec;
+
+        satellite.setPosition(orbitalRadius * (float) Math.cos(theta), orbitalRadius * (float) Math.sin(theta));
+    }
+
+    public void drawPath(ShapeRenderer shapeRenderer) {
+        shapeRenderer.setColor(Color.DARK_GRAY);
+        shapeRenderer.circle(0, 0, orbitalRadius, 60);
+    }
+
+    @Override
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+}
+
+
+class EllipticalOrbit implements Orbit {
+    private float e;
+    private float a;
+
+    private final double c;
+
+    private float startTime;
+
+    public EllipticalOrbit(float a, float e) {
+        this.a = a;
+        this.e = e;
+
+        c = Math.sqrt(((G*M) / (a*a*a)));
+    }
+
+    @Override
+    public void updateSatellite(Satellite satellite) {
+
+        float t = (TimeUtils.nanoTime() - startTime) * MathUtils.nanoToSec;
+        float E = (float) (c * t + e * Math.sin((c * t)));
+        double theta = 2 * Math.atan(Math.sqrt((1+e)/(1-e)) * Math.tan(E/2));
+        float r = (float) (a*(1-e*e) / (1+e*Math.cos((float)theta)));
+
+        satellite.setPosition((float) (r * Math.cos(theta)), (float) (r * Math.sin(theta)));
+    }
+
+    @Override
+    public void drawPath(ShapeRenderer shapeRenderer) {
+
+    }
+
+    @Override
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
     }
 }

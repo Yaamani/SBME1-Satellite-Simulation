@@ -5,13 +5,13 @@ package com.yaamani.satellitesimulation;
  */
 
 public class Constants {
-    public static final float WORLD_SIZE = 63710; //KM
+    public static final float WORLD_SIZE = 63710000;
     public static final float CAMERA_MOVEMENT_AMOUNT = WORLD_SIZE / 4;
 
     public static final float FLING_ACCELERATION = -100.0f;
     public static final float FLING_VELOCITY_DIVIDER = 70.0f;
 
-    public static final float MAX_ZOOM_FACTOR = 2.0f;
+    public static final float MAX_ZOOM_FACTOR = 20.0f;
     public static final float MIN_ZOOM_FACTOR = 0.3f;
     public static final float MOUSE_WHEEL_SENSITIVITY = 0.1f;
 
@@ -24,6 +24,6 @@ public class Constants {
     public static final int SLIDER_LINE_COLOR = 0xECF9FEFF;
     public static final int SLIDER_KNOB_COLOR = 0x3F93B8FF;
 
-
-
+    public static final double G = 6.674E-11;
+    public static final double M = 5.972E24;
 }
