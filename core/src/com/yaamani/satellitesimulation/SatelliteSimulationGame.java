@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,6 +17,7 @@ import static com.yaamani.satellitesimulation.Constants.*;
 
 public class SatelliteSimulationGame implements ApplicationListener {
 	private MyShapeRenderer shapeRenderer;
+	private SpriteBatch spriteBatch;
 
 	private ExtendViewport staticViewport; // doesn't respond to camera movement
 	private ExtendViewport viewport;
@@ -38,6 +41,7 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		shapeRenderer = new MyShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
 
+		spriteBatch = new SpriteBatch();
 
 		controls = new Controls(viewport);
 
@@ -118,6 +122,9 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
+		/*shapeRenderer.setColor(Color.BROWN);
+		shapeRenderer.rect(0, 0, WORLD_SIZE, WORLD_SIZE);*/
+
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 
@@ -135,6 +142,8 @@ public class SatelliteSimulationGame implements ApplicationListener {
 	public void resume() {
 
 	}
+
+
 
 	@Override
 	public void dispose () {

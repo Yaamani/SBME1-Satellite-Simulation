@@ -17,7 +17,7 @@ import static com.yaamani.satellitesimulation.Constants.*;
  * Created by Yamani on 3/13/18.
  */
 
-public class Slider extends Group {
+public class Slider extends Group implements Resizable{
 
     private MyShapeRenderer shapeRenderer;
 
@@ -229,7 +229,7 @@ public class Slider extends Group {
 
         public Divider(float dividingPercentage) {
             this.dividingPercentage = dividingPercentage;
-            color = new Color(SLIDER_LINE_COLOR);
+            color = new Color(COLOR_LIGHT);
         }
 
         private void addTouchArea() {
