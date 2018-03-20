@@ -2,6 +2,7 @@ package com.yaamani.satellitesimulation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -24,6 +25,8 @@ public class Slider extends Group {
     private Knob knob;
     private ArrayList<Divider> dividers;
 
+    private float lineWidth;
+
     private float percentage = 0; // 1 = 100%, 0 = 0%
 
     public Slider(MyShapeRenderer shapeRenderer,
@@ -33,6 +36,7 @@ public class Slider extends Group {
                   Color lineColor,
                   Color knobColor) {
         this.shapeRenderer = shapeRenderer;
+        this.lineWidth = lineWidth;
 
         setSize(lineWidth + knobRaduis * 2, knobRaduis * 2);
 
@@ -46,6 +50,42 @@ public class Slider extends Group {
         addActor(knob);
         knob.setBounds(0, 0, knob.getWidth(), knob.getHeight());
         knob.setPosition(0, 0);
+
+        setBounds(0, 0, getWidth(), getHeight());
+
+        addListener(new ClickListener() {
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                float shiftedX = x - getKnob().getRadius();
+
+                if (shiftedX > getLine().getWidth()) {
+                    setPercentage(1);
+                    super.touchDragged(event, x, y, pointer);
+                } else if (shiftedX < 0) {
+                    setPercentage(0);
+                    super.touchDragged(event, x, y, pointer);
+                } else {
+                    setPercentage(shiftedX / getLine().getWidth());
+                    super.touchDragged(event, x, y, pointer);
+                }
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                float shiftedX = x - getKnob().getRadius();
+
+                if (shiftedX > getLine().getWidth()) {
+                    setPercentage(1);
+                    return super.touchDown(event, x, y, pointer, button);
+                } else if (shiftedX < 0) {
+                    setPercentage(0);
+                    return super.touchDown(event, x, y, pointer, button);
+                } else {
+                    setPercentage(shiftedX / getLine().getWidth());
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+            }
+        });
 
         /*knob.addListener(new ClickListener() {
             @Override
@@ -65,10 +105,9 @@ public class Slider extends Group {
     }
 
     public void onResize() {
-        line.setWidth(getStage().getViewport().getWorldWidth() / WORLD_SIZE * SLIDER_LINE_WIDTH);
+        line.setWidth(getStage().getViewport().getWorldWidth() / WORLD_SIZE * lineWidth);
 
         setSize(line.getWidth() + knob.radius * 2, knob.radius * 2);
-        setPosition(getStage().getViewport().getWorldWidth() / 2 - getWidth() / 2, SLIDER_LINE_Y_POS);
     }
 
     public void addDivider(float dividingPercentage) {
@@ -106,6 +145,14 @@ public class Slider extends Group {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+        shapeRenderer.setColor(1, 1, 1, .3f);
+        //shapeRenderer.roundedRect(getX(), getY() + SLIDER_LINE_HEIGHT/2, getWidth(), getHeight(), getHeight()/2);
+
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
         super.draw(batch, parentAlpha);
     }
 

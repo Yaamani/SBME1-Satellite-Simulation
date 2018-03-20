@@ -21,39 +21,29 @@ public class MyStage extends Stage {
     private MyShapeRenderer shapeRenderer;
 
     private Slider timeLine;
+    private Slider speed;
 
     public MyStage(ExtendViewport staticViewport, MyShapeRenderer shapeRenderer) {
         super(staticViewport);
         this.shapeRenderer = shapeRenderer;
 
-        timeLine = new Slider(shapeRenderer, SLIDER_LINE_WIDTH, SLIDER_LINE_HEIGHT, SLIDER_KNOB_RADUIS, new Color(SLIDER_LINE_COLOR), new Color(SLIDER_KNOB_COLOR));
-        Gdx.app.log("Stage", "timeLine.getWidth() = " + timeLine.getWidth());
+        timeLine = new Slider(shapeRenderer,
+                MAIN_SLIDER_LINE_WIDTH,
+                SLIDER_LINE_HEIGHT,
+                SLIDER_KNOB_RADUIS,
+                new Color(SLIDER_LINE_COLOR),
+                new Color(SLIDER_KNOB_COLOR));
 
         addActor(timeLine);
 
-        timeLine.setBounds(0, 0, timeLine.getWidth(), timeLine.getHeight());
+        speed = new Slider(shapeRenderer,
+                SPEED_SLIDER_LINE_WIDTH,
+                SLIDER_LINE_HEIGHT,
+                SLIDER_KNOB_RADUIS,
+                new Color(SLIDER_LINE_COLOR),
+                new Color(SLIDER_KNOB_COLOR));
 
-        timeLine.setPosition(getViewport().getWorldWidth() / 2 - SLIDER_LINE_WIDTH / 2, SLIDER_LINE_Y_POS);
-
-        timeLine.addListener(new ClickListener() {
-            @Override
-            public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                float shiftedX = x - timeLine.getKnob().getRadius();
-
-                Gdx.app.log("timeline touchDragged", "shiftedX = " + shiftedX + ", timeLine.getLine().getWidth() = " + timeLine.getLine().getWidth());
-
-                if (shiftedX > timeLine.getLine().getWidth()) {
-                    timeLine.setPercentage(1);
-                    super.touchDragged(event, x, y, pointer);
-                } else if (shiftedX < 0) {
-                    timeLine.setPercentage(0);
-                    super.touchDragged(event, x, y, pointer);
-                } else {
-                    timeLine.setPercentage(shiftedX / timeLine.getLine().getWidth());
-                    super.touchDragged(event, x, y, pointer);
-                }
-            }
-        });
+        addActor(speed);
 
         //timeLine.addDivider(1f/3f);
     }
@@ -74,5 +64,9 @@ public class MyStage extends Stage {
 
     public void onResize() {
         timeLine.onResize();
+        timeLine.setPosition(getViewport().getWorldWidth() / 2 - timeLine.getWidth() / 2, SLIDER_LINE_Y_POS);
+
+        speed.onResize();
+        speed.setPosition(getViewport().getWorldWidth() * 5/5 - getViewport().getWorldWidth() / 5/2 - speed.getWidth() / 2, SLIDER_LINE_Y_POS);
     }
 }

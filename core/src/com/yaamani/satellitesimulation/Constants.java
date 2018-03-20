@@ -15,7 +15,11 @@ public class Constants {
     public static final float MIN_ZOOM_FACTOR = 0.3f;
     public static final float MOUSE_WHEEL_SENSITIVITY = 0.1f;
 
-    public static final float SLIDER_LINE_WIDTH = WORLD_SIZE / 1.5f;
+    public static final float UI_HORIZONTAL_GAPS = WORLD_SIZE / 15;
+    
+    public static final float MAIN_SLIDER_LINE_WIDTH = WORLD_SIZE * 3f/5f - UI_HORIZONTAL_GAPS;
+    public static final float SPEED_SLIDER_LINE_WIDTH = WORLD_SIZE * 1f/5f - UI_HORIZONTAL_GAPS;
+
     public static final float SLIDER_LINE_HEIGHT = WORLD_SIZE / 200;
     public static final float SLIDER_KNOB_RADUIS = WORLD_SIZE / 50;
     public static final float SLIDER_LINE_Y_POS = WORLD_SIZE / 12;

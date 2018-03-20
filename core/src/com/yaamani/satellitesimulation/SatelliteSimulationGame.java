@@ -24,9 +24,9 @@ public class SatelliteSimulationGame implements ApplicationListener {
 	private Satellite mySatellite;
 	private Satellite mySatellite2;
 	private Satellite mySatellite3;
-	private CircularOrbit circularOrbit;
-	private CircularOrbit circularOrbit2;
-	private EllipticalOrbit ellipticalOrbit;
+	private CircularOrbit leo;
+	private CircularOrbit geo;
+	private EllipticalOrbit gto;
 
 	private MyStage stage;
 
@@ -45,18 +45,18 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		mySatellite2 = new Satellite(WORLD_SIZE / 100, new Color(0xECF9FEFF));
 		mySatellite3 = new Satellite(WORLD_SIZE / 100, new Color(0xECF9FEFF));
 
-		circularOrbit = new CircularOrbit((2000+6371)*1000);
-		ellipticalOrbit = new EllipticalOrbit(25371000, 17000f/25371f);
-		circularOrbit2 = new CircularOrbit((36000+6371)*1000);
+		leo = new CircularOrbit((2000+6371)*1000);
+		gto = new EllipticalOrbit(25371000, 17000f/25371f);
+		geo = new CircularOrbit((36000+6371)*1000);
 
 
-		circularOrbit.setStartTime(TimeUtils.nanoTime());
-		ellipticalOrbit.setStartTime(TimeUtils.nanoTime());
-		circularOrbit2.setStartTime(TimeUtils.nanoTime());
+		leo.setStartTime(TimeUtils.nanoTime());
+		gto.setStartTime(TimeUtils.nanoTime());
+		geo.setStartTime(TimeUtils.nanoTime());
 
-		mySatellite.setOrbit(ellipticalOrbit);
-		mySatellite2.setOrbit(circularOrbit);
-		mySatellite3.setOrbit(circularOrbit2);
+		mySatellite.setOrbit(gto);
+		mySatellite2.setOrbit(leo);
+		mySatellite3.setOrbit(geo);
 
 
 		stage = new MyStage(staticViewport, shapeRenderer); //For UI stuff

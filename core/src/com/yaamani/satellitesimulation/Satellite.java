@@ -54,11 +54,20 @@ public class Satellite {
     }
 }
 
+
+
+
+
+
+
+
+
 interface Orbit {
     void updateSatellite(Satellite satellite);
     void drawPath(ShapeRenderer shapeRenderer);
     void setStartTime(long startTime);
 }
+
 
 
 
@@ -97,6 +106,13 @@ class CircularOrbit implements Orbit {
 }
 
 
+
+
+
+
+
+
+
 class EllipticalOrbit implements Orbit {
     private float e;
     private float a;
@@ -132,7 +148,6 @@ class EllipticalOrbit implements Orbit {
     public void drawPath(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(Color.DARK_GRAY);
         shapeRenderer.ellipse((a*e-a), -b, a*2, b*2, 50);
-//        shapeRenderer.ellipse(-WORLD_SIZE / 10, -WORLD_SIZE / 20, WORLD_SIZE / 5, WORLD_SIZE * (2.5f/10f));
     }
 
     @Override

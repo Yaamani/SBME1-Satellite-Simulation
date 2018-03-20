@@ -194,6 +194,61 @@ public class Controls implements GestureListener, InputProcessor {
         return false;
     }
 
+    // ---------------------- Pinch --------------------------
+
+    @Override
+    public boolean longPress(float x, float y) {
+        viewport.getCamera().position.set(0, 0, 0);
+        zoom(WORLD_SIZE);
+        return false;
+    }
+
+    private int pinchCount = 0;
+    private Vector2 lastPointer1 = new Vector2(Vector2.Zero);
+    private Vector2 lastPointer2 = new Vector2(Vector2.Zero);
+    private long lastPinchTime = 0;
+    float deltaTime;
+    private float deltaX;
+    private float deltaY;
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        Gdx.app.log("Pinch parameters", "initialPointer = " + initialPointer1 + ", initialPointer2 = " + initialPointer2 +
+                ", pointer1 = " + pointer1 + ", lastPointer1 = " + lastPointer1 +
+                ", pointer2 = " + pointer2 + ", lastPointer2 = " + lastPointer2);
+
+        if(pinchCount == 0) {
+            lastPointer1.set(pointer1);
+            lastPointer2.set(pointer2);
+        } else {
+            deltaX = pointer1.x - lastPointer1.x;
+            deltaY = pointer1.y - lastPointer1.y;
+
+            deltaTime = (TimeUtils.nanoTime() - lastPinchTime) * MathUtils.nanoToSec;
+
+            pan(pointer1.x, pointer1.y, deltaX, deltaY);
+
+
+            //Gdx.app.log("Pinch average pointers - counter", "averageLastPointer = " + averageLastPointer + ", averagePointer = " + averagePointer + ", pinchCount = " + pinchCount);
+        }
+
+        lastPinchTime = TimeUtils.nanoTime();
+
+        lastPointer1.set(pointer1);
+        lastPointer2.set(pointer2);
+
+        pinchCount++;
+
+        return false;
+    }
+
+    @Override
+    public void pinchStop() {
+        //TODO: Fling when pinch stops.
+        Gdx.app.log("PinchStop", "Stopped");
+        pinchCount = 0;
+    }
+
     // -------------------- Zoom Func ------------------------
     private void zoom(float height) {
         viewport.setWorldHeight(height);
@@ -249,59 +304,6 @@ public class Controls implements GestureListener, InputProcessor {
         Gdx.app.log("tap", "cameraPos.x = " + cameraPos.x + ", cameraPos.y = " + cameraPos.y);
 
         return false;
-    }
-
-    @Override
-    public boolean longPress(float x, float y) {
-        viewport.getCamera().position.set(0, 0, 0);
-        zoom(WORLD_SIZE);
-        return false;
-    }
-
-    private int pinchCount = 0;
-    private Vector2 lastPointer1 = new Vector2(Vector2.Zero);
-    private Vector2 lastPointer2 = new Vector2(Vector2.Zero);
-    private long lastPinchTime = 0;
-    float deltaTime;
-    private float deltaX;
-    private float deltaY;
-
-    @Override
-    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        Gdx.app.log("Pinch parameters", "initialPointer = " + initialPointer1 + ", initialPointer2 = " + initialPointer2 +
-                ", pointer1 = " + pointer1 + ", lastPointer1 = " + lastPointer1 +
-                ", pointer2 = " + pointer2 + ", lastPointer2 = " + lastPointer2);
-
-        if(pinchCount == 0) {
-            lastPointer1.set(pointer1);
-            lastPointer2.set(pointer2);
-        } else {
-            deltaX = pointer1.x - lastPointer1.x;
-            deltaY = pointer1.y - lastPointer1.y;
-
-            deltaTime = (TimeUtils.nanoTime() - lastPinchTime) * MathUtils.nanoToSec;
-
-            pan(pointer1.x, pointer1.y, deltaX, deltaY);
-
-
-            //Gdx.app.log("Pinch average pointers - counter", "averageLastPointer = " + averageLastPointer + ", averagePointer = " + averagePointer + ", pinchCount = " + pinchCount);
-        }
-
-        lastPinchTime = TimeUtils.nanoTime();
-
-        lastPointer1.set(pointer1);
-        lastPointer2.set(pointer2);
-
-        pinchCount++;
-
-        return false;
-    }
-
-    @Override
-    public void pinchStop() {
-        //TODO: Fling when pinch stops.
-        Gdx.app.log("PinchStop", "Stopped");
-        pinchCount = 0;
     }
 
     @Override
