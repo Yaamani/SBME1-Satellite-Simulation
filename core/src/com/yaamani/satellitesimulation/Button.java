@@ -8,12 +8,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Disposable;
-import com.sun.org.apache.xpath.internal.functions.Function;
 
 import static com.yaamani.satellitesimulation.Constants.*;
 
@@ -27,8 +25,8 @@ public class Button extends Actor implements Disposable, Resizable{
     private MyShapeRenderer shapeRenderer;
 
     private SpriteBatch spriteBatch;
-    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("arcon/Arcon-Regular.otf"));
-    FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    FreeTypeFontGenerator generator;
+    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
     private String text;
     private GlyphLayout glyphLayout;
     private BitmapFont font;
@@ -52,10 +50,14 @@ public class Button extends Actor implements Disposable, Resizable{
 
         spriteBatch = new SpriteBatch();
 
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("arcon/Arcon-Regular.otf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = fontSize;
         parameter.color = textColor;
         font = generator.generateFont(parameter);
         glyphLayout = new GlyphLayout();
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
 
         setSize(width, height);
         setBounds(0, 0, width, height);
@@ -86,6 +88,7 @@ public class Button extends Actor implements Disposable, Resizable{
                 glyphLayout,
                 getParent().getX() + getX() + getWidth()/2 - glyphLayout.width/2,
                 getParent().getY() + getY() + getHeight()/2 + glyphLayout.height/2);
+
         spriteBatch.end();
 
         super.draw(batch, parentAlpha);
@@ -101,6 +104,19 @@ public class Button extends Actor implements Disposable, Resizable{
     public void onResize() {
         setWidth(getStage().getViewport().getWorldWidth() / WORLD_SIZE * width);
         //TODO: change the size of the text in parameters and generate a new font to match the change in size
+        //Maybe the texture filtering is just fine ...
+
+        /*//generator = new FreeTypeFontGenerator(Gdx.files.internal("arcon/Arcon-Regular.otf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 20;
+        parameter.color = textColor;
+        font = new BitmapFont();
+        font = generator.generateFont(parameter);
+        font.getData().setScale(WORLD_SIZE/getStage().getViewport().getScreenHeight());
+        glyphLayout = new GlyphLayout();
+        glyphLayout.setText(font, text);
+        //font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);*/
+
     }
 
     public BitmapFont getFont() {

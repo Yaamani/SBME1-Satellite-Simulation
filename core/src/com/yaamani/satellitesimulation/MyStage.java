@@ -60,8 +60,9 @@ public class MyStage extends Stage implements Resizable{
 
         //timeLine.addDivider(1f/3f);
 
-        button = new Button(shapeRenderer, "Individual", 20, BUTTON_WIDTH + SLIDER_KNOB_RADUIS, SLIDER_KNOB_RADUIS*2, new Color(COLOR_LIGHT), new Color(COLOR_DARK), () -> {
+        button = new Button(shapeRenderer, "Individual", 25, BUTTON_WIDTH + SLIDER_KNOB_RADUIS, SLIDER_KNOB_RADUIS*2, new Color(COLOR_LIGHT), new Color(COLOR_DARK), () -> {
             Gdx.app.log("button clicked", "" + Version.VERSION);
+            button.getGlyphLayout().setText(button.getFont(), "");
         });
 
         addActor(button);
@@ -100,7 +101,7 @@ public class MyStage extends Stage implements Resizable{
         speed.setPosition(getViewport().getWorldWidth() * 5/5 - getViewport().getWorldWidth() / 5/2 - speed.getWidth() / 2, SLIDER_LINE_Y_POS);
 
         button.onResize();
-        button.setPosition(getViewport().getWorldWidth() * 1/5 - getViewport().getWorldWidth() / 5/2 - button.getWidth() / 2, SLIDER_LINE_Y_POS + SLIDER_LINE_HEIGHT);
+        button.setPosition(getViewport().getWorldWidth() * 1/5 - getViewport().getWorldWidth() / 5/2 - button.getWidth() / 2, SLIDER_LINE_Y_POS + 2*SLIDER_LINE_HEIGHT);
     }
 
     @Override
