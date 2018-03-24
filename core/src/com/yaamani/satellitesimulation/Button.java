@@ -130,6 +130,11 @@ public class Button extends Actor implements Disposable, Resizable{
     public String getText() {
         return text;
     }
+
+    public void setText(String text) {
+        this.text = text;
+        glyphLayout.setText(font, text);
+    }
 }
 
 

@@ -25,8 +25,7 @@ public class SatelliteSimulationGame implements ApplicationListener {
 	private Controls controls;
 
 	private Satellite mySatellite;
-	private Satellite mySatellite2;
-	private Satellite mySatellite3;
+
 	private CircularOrbit leo;
 	private CircularOrbit geo;
 	private EllipticalOrbit gto;
@@ -46,8 +45,6 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		controls = new Controls(viewport);
 
 		mySatellite = new Satellite(WORLD_SIZE / 100, new Color(0xECF9FEFF));
-		mySatellite2 = new Satellite(WORLD_SIZE / 100, new Color(0xECF9FEFF));
-		mySatellite3 = new Satellite(WORLD_SIZE / 100, new Color(0xECF9FEFF));
 
 		leo = new CircularOrbit((2000+6371)*1000);
 		gto = new EllipticalOrbit(25371000, 17000f/25371f);
@@ -59,8 +56,6 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		geo.setStartTime(TimeUtils.nanoTime());
 
 		mySatellite.setOrbit(gto);
-		mySatellite2.setOrbit(leo);
-		mySatellite3.setOrbit(geo);
 
 
 		stage = new MyStage(staticViewport, shapeRenderer); //For UI stuff
@@ -113,8 +108,6 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		shapeRenderer.circle(0, 0, WORLD_SIZE / 10/*6371*/, 45);
 
 		mySatellite.render(shapeRenderer);
-		mySatellite2.render(shapeRenderer);
-		mySatellite3.render(shapeRenderer);
 
 		staticViewport.apply();
 		shapeRenderer.setProjectionMatrix(staticViewport.getCamera().combined);
