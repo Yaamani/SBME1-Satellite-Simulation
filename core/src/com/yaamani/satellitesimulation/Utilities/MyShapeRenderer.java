@@ -1,4 +1,4 @@
-package com.yaamani.satellitesimulation;
+package com.yaamani.satellitesimulation.Utilities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  * Created by Yamani on 3/13/18.
  */
 
-class MyShapeRenderer extends ShapeRenderer { // part of it from   https://gamedev.stackexchange.com/questions/73103/how-do-i-render-a-rounded-rectangle-in-libgdx
+public class MyShapeRenderer extends ShapeRenderer { // part of it from   https://gamedev.stackexchange.com/questions/73103/how-do-i-render-a-rounded-rectangle-in-libgdx
     /**
      * Draws a rectangle with rounded corners of the given radius.
      */

@@ -1,4 +1,4 @@
-package com.yaamani.satellitesimulation;
+package com.yaamani.satellitesimulation.UI;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -7,17 +7,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.yaamani.satellitesimulation.Utilities.MyShapeRenderer;
+import com.yaamani.satellitesimulation.Utilities.Resizable;
 
 import java.util.ArrayList;
 
-import static com.yaamani.satellitesimulation.Constants.*;
+import static com.yaamani.satellitesimulation.Utilities.Constants.*;
 /**
  * Created by Yamani on 3/13/18.
  */
 
-public class Slider extends Group implements Resizable{
+public class Slider extends Group implements Resizable {
 
     private MyShapeRenderer shapeRenderer;
 
@@ -60,14 +61,17 @@ public class Slider extends Group implements Resizable{
 
                 if (shiftedX > getLine().getWidth()) {
                     setPercentage(1);
-                    super.touchDragged(event, x, y, pointer);
+                    //super.touchDragged(event, x, y, pointer);
                 } else if (shiftedX < 0) {
                     setPercentage(0);
-                    super.touchDragged(event, x, y, pointer);
+                    //super.touchDragged(event, x, y, pointer);
                 } else {
                     setPercentage(shiftedX / getLine().getWidth());
-                    super.touchDragged(event, x, y, pointer);
+                    //super.touchDragged(event, x, y, pointer);
                 }
+
+                onDragged();
+                super.touchDragged(event, x, y, pointer);
             }
 
             @Override
@@ -76,14 +80,16 @@ public class Slider extends Group implements Resizable{
 
                 if (shiftedX > getLine().getWidth()) {
                     setPercentage(1);
-                    return super.touchDown(event, x, y, pointer, button);
                 } else if (shiftedX < 0) {
                     setPercentage(0);
-                    return super.touchDown(event, x, y, pointer, button);
+                    //return super.touchDown(event, x, y, pointer, button);
                 } else {
                     setPercentage(shiftedX / getLine().getWidth());
-                    return super.touchDown(event, x, y, pointer, button);
+                    //return super.touchDown(event, x, y, pointer, button);
                 }
+
+                onDown();
+                return super.touchDown(event, x, y, pointer, button);
             }
         });
 
@@ -101,6 +107,14 @@ public class Slider extends Group implements Resizable{
                 super.pan(event, x, y, deltaX, deltaY);
             }
         });*/
+
+    }
+
+    protected void onDragged() {
+
+    }
+
+    protected void onDown() {
 
     }
 
@@ -243,8 +257,8 @@ public class Slider extends Group implements Resizable{
         @Override
         public void draw(Batch batch, float parentAlpha) {
             shapeRenderer.setColor(color);
-            shapeRenderer.setColor(0, 1, 0, .5f);
-            shapeRenderer.rect(touchArea.getX() + getParent().getX(), touchArea.getY() + getParent().getY(), touchArea.getWidth(), touchArea.getHeight());
+            /*shapeRenderer.setColor(0, 1, 0, .5f);
+            shapeRenderer.rect(touchArea.getX() + getParent().getX(), touchArea.getY() + getParent().getY(), touchArea.getWidth(), touchArea.getHeight());*/
             shapeRenderer.roundedRect(getParent().getX() + getX(),
                     getParent().getY() + getY(),
                     getWidth() * getScaleX(),

@@ -5,18 +5,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
-import static com.yaamani.satellitesimulation.Constants.*;
+import static com.yaamani.satellitesimulation.Utilities.Constants.*;
 
 public class SatelliteSimulationGame implements ApplicationListener {
-	private MyShapeRenderer shapeRenderer;
+	private com.yaamani.satellitesimulation.Utilities.MyShapeRenderer shapeRenderer;
 	private SpriteBatch spriteBatch;
 
 	private ExtendViewport staticViewport; // doesn't respond to camera movement
@@ -24,11 +22,11 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 	private Controls controls;
 
-	private Satellite mySatellite;
+	private com.yaamani.satellitesimulation.SatellitesOrrbits.Satellite mySatellite;
 
-	private CircularOrbit leo;
-	private CircularOrbit geo;
-	private EllipticalOrbit gto;
+	private com.yaamani.satellitesimulation.SatellitesOrrbits.CircularOrbit leo;
+	private com.yaamani.satellitesimulation.SatellitesOrrbits.CircularOrbit geo;
+	private com.yaamani.satellitesimulation.SatellitesOrrbits.EllipticalOrbit gto;
 
 	private MyStage stage;
 
@@ -37,23 +35,25 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		staticViewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 		viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 
-		shapeRenderer = new MyShapeRenderer();
+		shapeRenderer = new com.yaamani.satellitesimulation.Utilities.MyShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
 
 		spriteBatch = new SpriteBatch();
 
 		controls = new Controls(viewport);
 
-		mySatellite = new Satellite(WORLD_SIZE / 100, new Color(0xECF9FEFF));
+		mySatellite = new com.yaamani.satellitesimulation.SatellitesOrrbits.Satellite(WORLD_SIZE / 100, new Color(0xECF9FEFF));
 
-		leo = new CircularOrbit((2000+6371)*1000);
-		gto = new EllipticalOrbit(25371000, 17000f/25371f);
-		geo = new CircularOrbit((36000+6371)*1000);
+		leo = new com.yaamani.satellitesimulation.SatellitesOrrbits.CircularOrbit((2000+6371)*1000);
+		gto = new com.yaamani.satellitesimulation.SatellitesOrrbits.EllipticalOrbit(25371000, 17000f/25371f);
+		geo = new com.yaamani.satellitesimulation.SatellitesOrrbits.CircularOrbit((36000+6371)*1000);
 
 
 		leo.setStartTime(TimeUtils.nanoTime());
 		gto.setStartTime(TimeUtils.nanoTime());
 		geo.setStartTime(TimeUtils.nanoTime());
+
+		gto.setSpeedMultiplier(5000);
 
 		mySatellite.setOrbit(gto);
 
@@ -74,8 +74,7 @@ public class SatelliteSimulationGame implements ApplicationListener {
         	Gdx.graphics.setWindowedMode(height, height);
         	staticViewport.update(height, height, true);
 			viewport.update(height,	height, false);
-		}
-        else {
+		} else {
 			staticViewport.update(width, height, true);
 			viewport.update(width, height, false);
 		}

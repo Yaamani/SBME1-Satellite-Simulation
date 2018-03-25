@@ -1,4 +1,4 @@
-package com.yaamani.satellitesimulation;
+package com.yaamani.satellitesimulation.UI;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -12,16 +12,16 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Disposable;
+import com.yaamani.satellitesimulation.Utilities.MyShapeRenderer;
+import com.yaamani.satellitesimulation.Utilities.Resizable;
 
-import static com.yaamani.satellitesimulation.Constants.*;
-
-import java.util.Vector;
+import static com.yaamani.satellitesimulation.Utilities.Constants.*;
 
 /**
  * Created by Yamani on 3/20/18.
  */
 
-public class Button extends Actor implements Disposable, Resizable{
+public class Button extends Actor implements Disposable, Resizable {
     private MyShapeRenderer shapeRenderer;
 
     private SpriteBatch spriteBatch;
@@ -135,10 +135,4 @@ public class Button extends Actor implements Disposable, Resizable{
         this.text = text;
         glyphLayout.setText(font, text);
     }
-}
-
-
-
-interface Clickable {
-    void onClicked();
 }
