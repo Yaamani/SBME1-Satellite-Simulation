@@ -157,6 +157,10 @@ public class Slider extends Group implements Resizable {
         this.percentage = percentage;
     }
 
+    public float getPercentage() {
+        return percentage;
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         Gdx.gl.glEnable(GL20.GL_BLEND);

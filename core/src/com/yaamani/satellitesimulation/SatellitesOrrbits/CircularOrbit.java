@@ -1,5 +1,6 @@
 package com.yaamani.satellitesimulation.SatellitesOrrbits;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -11,24 +12,23 @@ import static com.yaamani.satellitesimulation.Utilities.Constants.M;
 /**
  * Created by Yamani on 3/25/18.
  */
-public class CircularOrbit implements Orbit {
+public class CircularOrbit extends Orbit {
+
     private float orbitalRadius;
     private float angularVelocity;
     private double theta;
 
-    private long startTime;
-
-    private float speedMultiplier = 1;
-
     public CircularOrbit(float orbitalRadius) {
         this.orbitalRadius = orbitalRadius;
         angularVelocity = (float) Math.sqrt(G * M / Math.pow(orbitalRadius, 3));
+
+        setOrbitalPeriod();
     }
 
 
 
     public void updateSatellite(Satellite satellite) {
-        theta = angularVelocity * (double) (TimeUtils.nanoTime() - startTime) * MathUtils.nanoToSec * speedMultiplier;
+        theta = angularVelocity * (double) (TimeUtils.nanoTime() - getStartTime()) * MathUtils.nanoToSec * getSpeedMultiplier();
 
         satellite.setPosition(orbitalRadius * (float) Math.cos(theta), orbitalRadius * (float) Math.sin(theta));
     }
@@ -39,12 +39,8 @@ public class CircularOrbit implements Orbit {
     }
 
     @Override
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
-
-    @Override
-    public void setSpeedMultiplier(float speedMultiplier) {
-        this.speedMultiplier = speedMultiplier;
+    protected void setOrbitalPeriod() {
+        this.orbitalPeriod = 2.0d*Math.PI*Math.sqrt((double) (orbitalRadius*orbitalRadius*orbitalRadius) / (G*M));
+        //Gdx.app.log("CircularOrbit", "orbitalPeriod = " + orbitalPeriod);
     }
 }
