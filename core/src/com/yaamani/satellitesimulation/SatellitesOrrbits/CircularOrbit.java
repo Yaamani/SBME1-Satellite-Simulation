@@ -18,19 +18,23 @@ public class CircularOrbit extends Orbit {
     private float angularVelocity;
     private double theta;
 
-    public CircularOrbit(float orbitalRadius) {
+    public CircularOrbit(Satellite satellite, float orbitalRadius) {
+        super(satellite);
+
         this.orbitalRadius = orbitalRadius;
         angularVelocity = (float) Math.sqrt(G * M / Math.pow(orbitalRadius, 3));
 
-        setOrbitalPeriod();
+        //setOrbitalPeriod();
     }
 
 
 
-    public void updateSatellite(Satellite satellite) {
-        theta = angularVelocity * (double) (TimeUtils.nanoTime() - getStartTime()) * MathUtils.nanoToSec * getSpeedMultiplier();
+    public void updateSatellite() {
+        //setCurrentTime(time);
 
-        satellite.setPosition(orbitalRadius * (float) Math.cos(theta), orbitalRadius * (float) Math.sin(theta));
+        theta = angularVelocity * getCurrentTime()/* * getSpeedMultiplier()*/;
+
+        getSatellite().setPosition(orbitalRadius * (float) Math.cos(theta), orbitalRadius * (float) Math.sin(theta));
     }
 
     public void drawPath(ShapeRenderer shapeRenderer) {

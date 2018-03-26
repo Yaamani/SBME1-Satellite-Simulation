@@ -7,15 +7,21 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  */
 public abstract class Orbit {
 
+    private Satellite satellite;
     protected double orbitalPeriod;
     private long startTime;
-    private float speedMultiplier = 1;
+    private double currentTime;
 
-    public abstract void updateSatellite(Satellite satellite);
+    public Orbit(Satellite satellite) {
+        this.satellite = satellite;
+    }
+
+    public abstract void updateSatellite();
     public abstract void drawPath(ShapeRenderer shapeRenderer);
     protected abstract void setOrbitalPeriod();
 
     public double getOrbitalPeriod() {
+        if (orbitalPeriod == 0) setOrbitalPeriod();
         return orbitalPeriod;
     }
 
@@ -27,11 +33,19 @@ public abstract class Orbit {
         this.startTime = startTime;
     }
 
-    public float getSpeedMultiplier() {
-        return speedMultiplier;
+    public double getCurrentTime() {
+        return currentTime;
     }
 
-    public void setSpeedMultiplier(float speedMultiplier) {
-        this.speedMultiplier = speedMultiplier;
+    public void setCurrentTime(double currentTime) {
+        this.currentTime = currentTime;
+    }
+
+    public Satellite getSatellite() {
+        return satellite;
+    }
+
+    public void setSatellite(Satellite satellite) {
+        this.satellite = satellite;
     }
 }

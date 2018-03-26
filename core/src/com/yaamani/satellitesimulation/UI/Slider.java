@@ -26,9 +26,11 @@ public class Slider extends Group implements Resizable {
     private Knob knob;
     private ArrayList<Divider> dividers;
 
+    private boolean dragging = false;
+
     private float lineWidth;
 
-    private float percentage = 0; // 1 = 100%, 0 = 0%
+    private double percentage = 0; // 1 = 100%, 0 = 0%
 
     public Slider(MyShapeRenderer shapeRenderer,
                   final float lineWidth,
@@ -57,6 +59,7 @@ public class Slider extends Group implements Resizable {
         addListener(new ClickListener() {
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                dragging = true;
                 float shiftedX = x - getKnob().getRadius();
 
                 if (shiftedX > getLine().getWidth()) {
@@ -91,6 +94,13 @@ public class Slider extends Group implements Resizable {
                 onDown();
                 return super.touchDown(event, x, y, pointer, button);
             }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                dragging = false;
+                onUp();
+                super.touchUp(event, x, y, pointer, button);
+            }
         });
 
         /*knob.addListener(new ClickListener() {
@@ -110,13 +120,11 @@ public class Slider extends Group implements Resizable {
 
     }
 
-    protected void onDragged() {
+    protected void onDragged() { }
 
-    }
+    protected void onDown() { }
 
-    protected void onDown() {
-
-    }
+    protected void onUp() { }
 
     public void onResize() {
         line.setWidth(getStage().getViewport().getWorldWidth() / WORLD_SIZE * lineWidth);
@@ -153,12 +161,16 @@ public class Slider extends Group implements Resizable {
         return knob;
     }
 
-    public void setPercentage(float percentage) {
+    public void setPercentage(double percentage) {
         this.percentage = percentage;
     }
 
-    public float getPercentage() {
+    public double getPercentage() {
         return percentage;
+    }
+
+    public boolean isDragging() {
+        return dragging;
     }
 
     @Override
@@ -173,13 +185,6 @@ public class Slider extends Group implements Resizable {
 
         super.draw(batch, parentAlpha);
     }
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-    }
-
-
 
     public class Line extends Actor {
         private Color lineColor;
@@ -228,7 +233,7 @@ public class Slider extends Group implements Resizable {
         public void act(float delta) {
             super.act(delta);
 
-            setPosition(percentage * line.getWidth(), line.getHeight() / 2);
+            setPosition((float) percentage * line.getWidth(), line.getHeight() / 2);
         }
 
         public float getRadius() {

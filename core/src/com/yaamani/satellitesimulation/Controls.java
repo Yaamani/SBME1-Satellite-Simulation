@@ -28,9 +28,11 @@ public class Controls implements GestureListener, InputProcessor {
     private float yLimit;
     private float xLimit;
 
-    public Controls(ExtendViewport viewport) {
-        this.viewport = viewport;
+    private MyStage myStage;
 
+    public Controls(ExtendViewport viewport, MyStage myStage) {
+        this.viewport = viewport;
+        this.myStage = myStage;
     }
 
     public void update() {
@@ -297,9 +299,8 @@ public class Controls implements GestureListener, InputProcessor {
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        Vector3 cameraPos = viewport.getCamera().position;
-
-        Gdx.app.log("tap", "cameraPos.x = " + cameraPos.x + ", cameraPos.y = " + cameraPos.y);
+        if (myStage.isPlay()) myStage.setPlay(false);
+        else myStage.setPlay(true);
 
         return false;
     }

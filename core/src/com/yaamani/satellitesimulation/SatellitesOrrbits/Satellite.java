@@ -2,6 +2,7 @@ package com.yaamani.satellitesimulation.SatellitesOrrbits;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 /**
@@ -36,12 +37,16 @@ public class Satellite {
     }
 
     private void update() {
-        if (currentOrbit != null) currentOrbit.updateSatellite(this);
+        //if (currentOrbit != null) currentOrbit.updateSatellite(this, (TimeUtils.nanoTime()-currentOrbit.getStartTime())* MathUtils.nanoToSec);
     }
 
     public void setOrbit(Orbit orbit) {
-        orbit.setStartTime(TimeUtils.nanoTime());
+        //orbit.setStartTime(TimeUtils.nanoTime());
         this.currentOrbit = orbit;
+    }
+
+    public Orbit getCurrentOrbit() {
+        return currentOrbit;
     }
 
     public void setPosition(float x, float y) {
