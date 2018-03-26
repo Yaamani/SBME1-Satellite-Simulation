@@ -59,7 +59,6 @@ public class Slider extends Group implements Resizable {
         addListener(new ClickListener() {
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                dragging = true;
                 float shiftedX = x - getKnob().getRadius();
 
                 if (shiftedX > getLine().getWidth()) {
@@ -79,6 +78,8 @@ public class Slider extends Group implements Resizable {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                dragging = true;
+
                 float shiftedX = x - getKnob().getRadius();
 
                 if (shiftedX > getLine().getWidth()) {
@@ -133,7 +134,7 @@ public class Slider extends Group implements Resizable {
     }
 
     public void addDivider(float dividingPercentage) {
-        if (dividers == null) dividers = new ArrayList<Divider>();
+        if (dividers == null) dividers = new ArrayList<>();
 
         Divider divider = new Divider(dividingPercentage);
         dividers.add(divider);

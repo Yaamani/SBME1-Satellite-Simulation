@@ -199,7 +199,7 @@ public class MyStage extends Stage implements Resizable {
                 SLIDER_KNOB_RADUIS,
                 new Color(COLOR_LIGHT),
                 new Color(COLOR_DARK),
-                5000,
+                10000,
                 myStage);
 
         addActor(mySpeedSlider);
@@ -237,6 +237,8 @@ public class MyStage extends Stage implements Resizable {
 
                         setState(State.TOTAL);
                     }
+
+                    setPlay(true);
                 }
         );
 

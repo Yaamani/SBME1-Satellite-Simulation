@@ -39,15 +39,23 @@ public class MySingleOrbitTimeline extends Slider {
     }
 
     @Override
+    protected void onDragged() {
+        controllingOrbit.setCurrentTime(getPercentage() * controllingOrbit.getOrbitalPeriod());
+    }
+
+    @Override
     public void act(float delta) {
         super.act(delta);
 
         if (myStage.isPlay() & myStage.getState() == MyStage.State.INDIVIDUAL & !isDragging()) {
             setPercentage(getPercentage() + (1f / controllingOrbit.getOrbitalPeriod() * myStage.getSpeedMultiplier()) * delta);
 
-            if (getPercentage() >= 1) setPercentage(0);
-        }
+            myStage.getSsg().getMySatellite().setOrbit(controllingOrbit);
 
-        controllingOrbit.setCurrentTime(getPercentage() * controllingOrbit.getOrbitalPeriod());
+            if (getPercentage() >= 1) setPercentage(0);
+
+            controllingOrbit.setCurrentTime(getPercentage() * controllingOrbit.getOrbitalPeriod());
+
+        }
     }
 }

@@ -32,7 +32,7 @@ public class MySpeedSlider extends Slider {
 
         this.myStage = myStage;
 
-        setPercentage(1);
+        setPercentage(.5f);
         onDown();
     }
 
