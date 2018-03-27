@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import static com.yaamani.satellitesimulation.Utilities.Constants.COLOR_PATH;
 import static com.yaamani.satellitesimulation.Utilities.Constants.G;
 import static com.yaamani.satellitesimulation.Utilities.Constants.M;
 
@@ -48,7 +49,7 @@ public class EllipticalOrbit extends Orbit {
 
     @Override
     public void drawPath(ShapeRenderer shapeRenderer) {
-        shapeRenderer.setColor(Color.DARK_GRAY);
+        shapeRenderer.setColor(new Color(COLOR_PATH));
         shapeRenderer.ellipse((-a -a*e), -b, a * 2, b * 2, 50);
     }
 
@@ -58,4 +59,15 @@ public class EllipticalOrbit extends Orbit {
         Gdx.app.log("EllipticalOrbit", "orbitalPeriod = " + orbitalPeriod);
     }
 
+    public float getE() {
+        return e;
+    }
+
+    public float getA() {
+        return a;
+    }
+
+    public float getB() {
+        return b;
+    }
 }

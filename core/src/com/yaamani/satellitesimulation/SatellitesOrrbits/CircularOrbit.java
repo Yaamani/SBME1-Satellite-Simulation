@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import static com.yaamani.satellitesimulation.Utilities.Constants.COLOR_PATH;
 import static com.yaamani.satellitesimulation.Utilities.Constants.G;
 import static com.yaamani.satellitesimulation.Utilities.Constants.M;
 
@@ -38,7 +39,7 @@ public class CircularOrbit extends Orbit {
     }
 
     public void drawPath(ShapeRenderer shapeRenderer) {
-        shapeRenderer.setColor(Color.DARK_GRAY);
+        shapeRenderer.setColor(new Color(COLOR_PATH));
         shapeRenderer.circle(0, 0, orbitalRadius, 60);
     }
 
@@ -46,5 +47,9 @@ public class CircularOrbit extends Orbit {
     protected void setOrbitalPeriod() {
         this.orbitalPeriod = 2.0d*Math.PI*Math.sqrt((double) (orbitalRadius*orbitalRadius*orbitalRadius) / (G*M));
         //Gdx.app.log("CircularOrbit", "orbitalPeriod = " + orbitalPeriod);
+    }
+
+    public float getOrbitalRadius() {
+        return orbitalRadius;
     }
 }

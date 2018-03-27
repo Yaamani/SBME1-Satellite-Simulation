@@ -52,10 +52,7 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		gto = new EllipticalOrbit(mySatellite, 25371000, 17000f/25371f);
 		geo = new CircularOrbit(mySatellite, (36000+6371)*1000);
 
-
-		leo.setStartTime(TimeUtils.nanoTime());
-		gto.setStartTime(TimeUtils.nanoTime());
-		geo.setStartTime(TimeUtils.nanoTime());
+		leo.setCurrentTime(leo.getOrbitalPeriod() / 2f);
 
 		mySatellite.setOrbit(gto);
 
@@ -106,6 +103,8 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 		viewport.apply();
 		shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+
+		stage.getMyHohmannTimeline().drawHohmannPath(shapeRenderer);
 
 		shapeRenderer.setColor(Color.SKY);
 		shapeRenderer.circle(0, 0, WORLD_SIZE / 10/*6371*/, 45);
@@ -163,5 +162,13 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 	public Satellite getMySatellite() {
 		return mySatellite;
+	}
+
+	public ExtendViewport getViewport() {
+		return viewport;
+	}
+
+	public ExtendViewport getStaticViewport() {
+		return staticViewport;
 	}
 }

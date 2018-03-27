@@ -2,12 +2,15 @@ package com.yaamani.satellitesimulation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.yaamani.satellitesimulation.SatellitesOrrbits.CircularOrbit;
+import com.yaamani.satellitesimulation.SatellitesOrrbits.EllipticalOrbit;
 import com.yaamani.satellitesimulation.SatellitesOrrbits.Orbit;
 import com.yaamani.satellitesimulation.SatellitesOrrbits.Satellite;
 import com.yaamani.satellitesimulation.UI.Slider;
 import com.yaamani.satellitesimulation.Utilities.MyShapeRenderer;
 
-import static com.yaamani.satellitesimulation.Utilities.Constants.SLIDER_LINE_Y_POS;
+import static com.yaamani.satellitesimulation.Utilities.Constants.*;
 
 /**
  * Created by Yamani on 3/25/18.
@@ -15,7 +18,8 @@ import static com.yaamani.satellitesimulation.Utilities.Constants.SLIDER_LINE_Y_
 
 public class MyHohmannTimeline extends Slider {
 
-    private Satellite satellite;
+
+    private MyShapeRenderer myShapeRenderer;
 
     private Orbit leo;
     private Orbit gto;
@@ -31,14 +35,13 @@ public class MyHohmannTimeline extends Slider {
                              float knobRaduis,
                              Color lineColor,
                              Color knobColor,
-                             Satellite satellite,
                              Orbit leo,
                              Orbit gto,
                              Orbit geo,
                              MyStage myStage) {
         super(shapeRenderer, lineWidth, lineHeight, knobRaduis, lineColor, knobColor);
 
-        this.satellite = satellite;
+        this.myShapeRenderer = shapeRenderer;
 
         this.leo = leo;
         this.gto = gto;
@@ -52,7 +55,7 @@ public class MyHohmannTimeline extends Slider {
 
     @Override
     protected void onDragged() {
-        determiningControllingOrbit();
+        determiningControllingOrbitAndDrawing();
 
         determiningOrbitTime();
     }
@@ -63,7 +66,7 @@ public class MyHohmannTimeline extends Slider {
 
         if (myStage.isPlay() & myStage.getState() == MyStage.State.TOTAL & !isDragging()) {
 
-            float orbitPercent = determiningControllingOrbit();
+            float orbitPercent = determiningControllingOrbitAndDrawing();
 
             setPercentage(getPercentage() + (orbitPercent / controllingOrbit.getOrbitalPeriod() * myStage.getSpeedMultiplier()) * delta);
 
@@ -74,7 +77,7 @@ public class MyHohmannTimeline extends Slider {
 
     }
 
-    private float determiningControllingOrbit() {
+    private float determiningControllingOrbitAndDrawing() {
         float orbitPercent;
 
         if (getPercentage() < 1f/7f) {
@@ -105,6 +108,33 @@ public class MyHohmannTimeline extends Slider {
     public void onResize() {
         super.onResize();
         this.setPosition(getStage().getViewport().getWorldWidth() / 2 - getWidth() / 2, SLIDER_LINE_Y_POS);
+
+    }
+
+    public void drawHohmannPath(MyShapeRenderer myShapeRenderer) {
+        if (myStage.getState() != MyStage.State.TOTAL) return;
+
+        if (getPercentage() > 1f/7f) {
+            myShapeRenderer.set(ShapeRenderer.ShapeType.Line);
+            myShapeRenderer.setColor(new Color(COLOR_PATH));
+            myShapeRenderer.ellipse((-((EllipticalOrbit) gto).getA() -((EllipticalOrbit) gto).getA()*((EllipticalOrbit) gto).getE()), -((EllipticalOrbit) gto).getB(), ((EllipticalOrbit) gto).getA() * 2, ((EllipticalOrbit) gto).getB() * 2, 50);
+
+            myShapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+            myShapeRenderer.setColor(Color.BLACK);
+            myShapeRenderer.arc((-((EllipticalOrbit) gto).getA()*((EllipticalOrbit) gto).getE()), 0, ((EllipticalOrbit) gto).getA(), 180, 180, 60);
+        }
+
+        if (getPercentage() >= 3f/7f) gto.getSatellite().setDrawPath(true);
+        else gto.getSatellite().setDrawPath(false);
+
+
+        myShapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        myShapeRenderer.setColor(new Color(COLOR_PATH));
+        myShapeRenderer.arc(0, 0, ((CircularOrbit) leo).getOrbitalRadius(), 180, 180, 60);
+
+        myShapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+        myShapeRenderer.setColor(Color.BLACK);
+        myShapeRenderer.rect(-((CircularOrbit) leo).getOrbitalRadius() - 20000, -50000, 2*((CircularOrbit) leo).getOrbitalRadius(), 100000);
 
     }
 }

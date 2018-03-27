@@ -16,6 +16,8 @@ public class Satellite {
 
     private Orbit currentOrbit;
 
+    private boolean drawPath = false;
+
     public Satellite(float radius, Color color) {
         this.radius = radius;
         this.color = color;
@@ -26,7 +28,7 @@ public class Satellite {
 
         shapeRenderer.set(ShapeRenderer.ShapeType.Line);
 
-        if (currentOrbit != null) currentOrbit.drawPath(shapeRenderer);
+        if (currentOrbit != null & drawPath) currentOrbit.drawPath(shapeRenderer);
 
         shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -51,6 +53,10 @@ public class Satellite {
 
     public void setPosition(float x, float y) {
         this.position.set(x, y);
+    }
+
+    public void setDrawPath(boolean drawPath) {
+        this.drawPath = drawPath;
     }
 }
 

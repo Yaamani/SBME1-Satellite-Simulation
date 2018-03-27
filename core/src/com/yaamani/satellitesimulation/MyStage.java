@@ -113,16 +113,16 @@ public class MyStage extends Stage implements Resizable {
         mySpeedSlider.setPosition(getViewport().getWorldWidth() * 5/5 - getViewport().getWorldWidth() / 5/2 - mySpeedSlider.getWidth() / 2, SLIDER_LINE_Y_POS);
 
         individualTotal_btn.onResize();
-        individualTotal_btn.setPosition(getViewport().getWorldWidth() * 1/5 - getViewport().getWorldWidth() / 5/2 - individualTotal_btn.getWidth() / 2, SLIDER_LINE_Y_POS + 2*SLIDER_LINE_HEIGHT);
+        individualTotal_btn.setPosition(getViewport().getWorldWidth() * 1/5 - getViewport().getWorldWidth() / 5/2 - individualTotal_btn.getWidth() / 2, SLIDER_LINE_Y_POS);
 
         leo_btn.onResize();
-        leo_btn.setPosition(getViewport().getWorldWidth() * 2/5 - getViewport().getWorldWidth() / 5/2 - individualTotal_btn.getWidth() / 2, 2*SLIDER_LINE_Y_POS + 2*SLIDER_LINE_HEIGHT);
+        leo_btn.setPosition(getViewport().getWorldWidth() * 2/5 - getViewport().getWorldWidth() / 5/2 - individualTotal_btn.getWidth() / 2, 2*SLIDER_LINE_Y_POS);
 
         gto_btn.onResize();
-        gto_btn.setPosition(getViewport().getWorldWidth() * 3/5 - getViewport().getWorldWidth() / 5/2 - individualTotal_btn.getWidth() / 2, 2*SLIDER_LINE_Y_POS + 2*SLIDER_LINE_HEIGHT);
+        gto_btn.setPosition(getViewport().getWorldWidth() * 3/5 - getViewport().getWorldWidth() / 5/2 - individualTotal_btn.getWidth() / 2, 2*SLIDER_LINE_Y_POS);
 
         geo_btn.onResize();
-        geo_btn.setPosition(getViewport().getWorldWidth() * 4/5 - getViewport().getWorldWidth() / 5/2 - individualTotal_btn.getWidth() / 2, 2*SLIDER_LINE_Y_POS + 2*SLIDER_LINE_HEIGHT);
+        geo_btn.setPosition(getViewport().getWorldWidth() * 4/5 - getViewport().getWorldWidth() / 5/2 - individualTotal_btn.getWidth() / 2, 2*SLIDER_LINE_Y_POS);
     }
 
     @Override
@@ -158,6 +158,10 @@ public class MyStage extends Stage implements Resizable {
         return ssg;
     }
 
+    public MyHohmannTimeline getMyHohmannTimeline() {
+        return myHohmannTimeline;
+    }
+
     // ------------- Initializers ------------
 
     private void initializeMyHohmannTimeline(SatelliteSimulationGame ssg, MyStage myStage) {
@@ -167,7 +171,6 @@ public class MyStage extends Stage implements Resizable {
                 SLIDER_KNOB_RADUIS,
                 new Color(COLOR_LIGHT),
                 new Color(COLOR_DARK),
-                ssg.getMySatellite(),
                 ssg.getLeo(),
                 ssg.getGto(),
                 ssg.getGeo(),
@@ -210,7 +213,7 @@ public class MyStage extends Stage implements Resizable {
                 "Individual",
                 fontSize,
                 BUTTON_WIDTH + SLIDER_KNOB_RADUIS,
-                SLIDER_KNOB_RADUIS*2,
+                SLIDER_KNOB_RADUIS*3,
                 new Color(COLOR_LIGHT),
                 new Color(COLOR_DARK),
                 () -> {
@@ -253,7 +256,7 @@ public class MyStage extends Stage implements Resizable {
                 "LEO",
                 fontSize,
                 BUTTON_WIDTH + SLIDER_KNOB_RADUIS,
-                SLIDER_KNOB_RADUIS*2,
+                SLIDER_KNOB_RADUIS*3,
                 new Color(COLOR_LIGHT),
                 new Color(COLOR_DARK),
                 () -> {
@@ -274,7 +277,7 @@ public class MyStage extends Stage implements Resizable {
                 "GTO",
                 fontSize,
                 BUTTON_WIDTH + SLIDER_KNOB_RADUIS,
-                SLIDER_KNOB_RADUIS*2,
+                SLIDER_KNOB_RADUIS*3,
                 new Color(COLOR_LIGHT),
                 new Color(COLOR_DARK),
                 () -> {
@@ -295,7 +298,7 @@ public class MyStage extends Stage implements Resizable {
                 "GEO",
                 fontSize,
                 BUTTON_WIDTH + SLIDER_KNOB_RADUIS,
-                SLIDER_KNOB_RADUIS*2,
+                SLIDER_KNOB_RADUIS*3,
                 new Color(COLOR_LIGHT),
                 new Color(COLOR_DARK),
                 () -> {

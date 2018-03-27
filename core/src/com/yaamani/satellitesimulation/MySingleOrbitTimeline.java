@@ -13,6 +13,8 @@ import static com.yaamani.satellitesimulation.Utilities.Constants.*;
 
 public class MySingleOrbitTimeline extends Slider {
 
+    private MyShapeRenderer myShapeRenderer;
+
     private Orbit controllingOrbit;
 
     private MyStage myStage;
@@ -20,6 +22,7 @@ public class MySingleOrbitTimeline extends Slider {
     public MySingleOrbitTimeline(MyShapeRenderer shapeRenderer, float lineWidth, float lineHeight, float knobRaduis, Color lineColor, Color knobColor, MyStage myStage) {
         super(shapeRenderer, lineWidth, lineHeight, knobRaduis, lineColor, knobColor);
 
+        this.myShapeRenderer = shapeRenderer;
         this.myStage = myStage;
     }
 
@@ -48,6 +51,8 @@ public class MySingleOrbitTimeline extends Slider {
         super.act(delta);
 
         if (myStage.isPlay() & myStage.getState() == MyStage.State.INDIVIDUAL & !isDragging()) {
+
+            controllingOrbit.getSatellite().setDrawPath(true);
             setPercentage(getPercentage() + (1f / controllingOrbit.getOrbitalPeriod() * myStage.getSpeedMultiplier()) * delta);
 
             myStage.getSsg().getMySatellite().setOrbit(controllingOrbit);
