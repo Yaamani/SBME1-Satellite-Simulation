@@ -29,7 +29,7 @@ public class Constants {
 
     public static final int COLOR_LIGHT = 0xECF9FEFF;
     public static final int COLOR_DARK = 0x3F93B8FF;
-    public static final int COLOR_PATH = 0x7f7f7fff;
+    public static final int COLOR_PATH = 0xbfbfbfff;
 
     public static final double G = 6.674E-11;
     public static final double M = 5.972E24;

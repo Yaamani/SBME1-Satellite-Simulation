@@ -134,7 +134,7 @@ public class MyHohmannTimeline extends Slider {
 
         myShapeRenderer.set(ShapeRenderer.ShapeType.Filled);
         myShapeRenderer.setColor(Color.BLACK);
-        myShapeRenderer.rect(-((CircularOrbit) leo).getOrbitalRadius() - 20000, -50000, 2*((CircularOrbit) leo).getOrbitalRadius(), 100000);
+        myShapeRenderer.rect(-((CircularOrbit) leo).getOrbitalRadius() - 20000, -250000, 2*((CircularOrbit) leo).getOrbitalRadius(), 500000);
 
     }
 }

@@ -299,8 +299,8 @@ public class Controls implements GestureListener, InputProcessor {
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        if (myStage.isPlay()) myStage.setPlay(false);
-        else myStage.setPlay(true);
+        /*if (myStage.isPlay()) myStage.setPlay(false);
+        else myStage.setPlay(true);*/
 
         return false;
     }

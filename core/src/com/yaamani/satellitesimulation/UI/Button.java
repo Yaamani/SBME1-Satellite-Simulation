@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Disposable;
@@ -38,6 +39,8 @@ public class Button extends Actor implements Disposable, Resizable {
     private Texture texture;
 
     private float width;
+
+    private boolean drawText = true;
 
     public Button(MyShapeRenderer shapeRenderer, String text, int fontSize, float width, float height, Color textColor, Color bgColor, final Clickable myClickable) {
         this.shapeRenderer = shapeRenderer;
@@ -74,15 +77,15 @@ public class Button extends Actor implements Disposable, Resizable {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        /*shapeRenderer.setColor(bgColor.r, bgColor.g, bgColor.b, .5f);
-        shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(bgColor.r, bgColor.g, bgColor.b, 1f);
+        shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.roundedRect(getParent().getX() + getX(),
                 getParent().getY() + getY(),
                 getWidth() * getScaleX(),
                 getHeight() * getScaleY(),
-                getHeight()/2);*/
+                getHeight()/2);
 
-        spriteBatch.setProjectionMatrix(getStage().getViewport().getCamera().combined);
+        /*spriteBatch.setProjectionMatrix(getStage().getViewport().getCamera().combined);
         spriteBatch.begin();
         //spriteBatch.draw(texture, getParent().getX() + getX() + 0, getParent().getY() + getY() + 0, WORLD_SIZE/5, WORLD_SIZE/5);
         font.draw(spriteBatch,
@@ -90,7 +93,7 @@ public class Button extends Actor implements Disposable, Resizable {
                 getParent().getX() + getX() + getWidth()/2 - glyphLayout.width/2,
                 getParent().getY() + getY() + getHeight()/2 + glyphLayout.height/2);
 
-        spriteBatch.end();
+        spriteBatch.end();*/
 
         super.draw(batch, parentAlpha);
     }
@@ -136,4 +139,31 @@ public class Button extends Actor implements Disposable, Resizable {
         this.text = text;
         glyphLayout.setText(font, text);
     }
+
+    public void drawText(SpriteBatch spriteBatch) {
+        if (drawText) {
+            font.draw(spriteBatch,
+                    glyphLayout,
+                    getParent().getX() + getX() + getWidth() / 2 - glyphLayout.width / 2,
+                    getParent().getY() + getY() + getHeight() / 2 + glyphLayout.height / 2);
+        }
+    }
+
+    public boolean isDrawText() {
+        return drawText;
+    }
+
+    public void setDrawText(boolean drawText) {
+        this.drawText = drawText;
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+
+        if (isVisible()) drawText = true;
+        else drawText = false;
+    }
+
+
 }

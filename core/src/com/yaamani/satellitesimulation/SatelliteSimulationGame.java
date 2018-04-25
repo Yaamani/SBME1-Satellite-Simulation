@@ -126,6 +126,16 @@ public class SatelliteSimulationGame implements ApplicationListener {
 
 		shapeRenderer.end();
 
+		spriteBatch.begin();
+		spriteBatch.setProjectionMatrix(stage.getViewport().getCamera().combined);
+
+		stage.getIndividualTotal_btn().drawText(spriteBatch);
+		stage.getLeo_btn().drawText(spriteBatch);
+		stage.getGto_btn().drawText(spriteBatch);
+		stage.getGeo_btn().drawText(spriteBatch);
+
+		spriteBatch.end();
+
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 

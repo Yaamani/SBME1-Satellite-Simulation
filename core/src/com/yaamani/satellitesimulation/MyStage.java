@@ -69,17 +69,17 @@ public class MyStage extends Stage implements Resizable {
 
         initializeMyHohmannTimeline(ssg, this);
 
-        initializeMySingleOrbitTimeline(this);
-
-        initializeMySpeedSlider(ssg, this);
-
-        initializeIndividualTotal_btn();
-
         initializeLeo_btn();
 
         initializeGto_btn();
 
         initializeGeo_btn();
+
+        initializeIndividualTotal_btn();
+
+        initializeMySingleOrbitTimeline(this);
+
+        initializeMySpeedSlider(ssg, this);
     }
 
     @Override
@@ -160,6 +160,22 @@ public class MyStage extends Stage implements Resizable {
 
     public MyHohmannTimeline getMyHohmannTimeline() {
         return myHohmannTimeline;
+    }
+
+    public Button getLeo_btn() {
+        return leo_btn;
+    }
+
+    public Button getGto_btn() {
+        return gto_btn;
+    }
+
+    public Button getGeo_btn() {
+        return geo_btn;
+    }
+
+    public Button getIndividualTotal_btn() {
+        return individualTotal_btn;
     }
 
     // ------------- Initializers ------------
@@ -245,10 +261,10 @@ public class MyStage extends Stage implements Resizable {
                 }
         );
 
+        addActor(individualTotal_btn);
+
         individualTotal_btn.getFont().getData().setScale(WORLD_SIZE/getViewport().getScreenHeight());
         individualTotal_btn.getGlyphLayout().setText(individualTotal_btn.getFont(), individualTotal_btn.getText());
-
-        addActor(individualTotal_btn);
     }
 
     private void initializeLeo_btn() {
@@ -262,6 +278,7 @@ public class MyStage extends Stage implements Resizable {
                 () -> {
                     Gdx.app.log("LEO_BTN", "Clicked !!");
                     mySingleOrbitTimeline.setControllingOrbit(ssg.getLeo());
+
                 }
         );
 
