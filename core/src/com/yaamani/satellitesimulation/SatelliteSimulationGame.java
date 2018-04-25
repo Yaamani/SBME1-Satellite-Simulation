@@ -134,6 +134,10 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		stage.getGto_btn().drawText(spriteBatch);
 		stage.getGeo_btn().drawText(spriteBatch);
 
+		stage.getZoomIn_btn().drawText(spriteBatch);
+		stage.getZoomOut_btn().drawText(spriteBatch);
+		stage.getReset_btn().drawText(spriteBatch);
+
 		spriteBatch.end();
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -174,11 +178,11 @@ public class SatelliteSimulationGame implements ApplicationListener {
 		return mySatellite;
 	}
 
-	public ExtendViewport getViewport() {
-		return viewport;
+	public Controls getControls() {
+		return controls;
 	}
 
-	public ExtendViewport getStaticViewport() {
-		return staticViewport;
+	public ExtendViewport getViewport() {
+		return viewport;
 	}
 }

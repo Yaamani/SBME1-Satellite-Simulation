@@ -33,6 +33,8 @@ public class Controls implements GestureListener, InputProcessor {
     public Controls(ExtendViewport viewport, MyStage myStage) {
         this.viewport = viewport;
         this.myStage = myStage;
+
+        reset();
     }
 
     public void update() {
@@ -75,8 +77,7 @@ public class Controls implements GestureListener, InputProcessor {
         cameraBoundaries(-horizontalAxis, verticalAxis);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            cameraPos.set(0, 0, 0);
-            zoom(WORLD_SIZE);
+            reset();
         }
 
         //Gdx.app.log("Zoom Factor", "" + zoomFactor);
@@ -198,8 +199,7 @@ public class Controls implements GestureListener, InputProcessor {
 
     @Override
     public boolean longPress(float x, float y) {
-        viewport.getCamera().position.set(0, 0, 0);
-        zoom(WORLD_SIZE);
+        reset();
         return false;
     }
 
@@ -250,7 +250,7 @@ public class Controls implements GestureListener, InputProcessor {
     }
 
     // -------------------- Zoom Func ------------------------
-    private void zoom(float height) {
+    public void zoom(float height) {
         viewport.setWorldHeight(height);
         viewport.setWorldWidth(aspectRatio * (height));
     }
@@ -261,6 +261,11 @@ public class Controls implements GestureListener, InputProcessor {
 
     private boolean isZoomOutAllowed() {
         return zoomFactor <= MAX_ZOOM_FACTOR;
+    }
+
+    public void reset() {
+        viewport.getCamera().position.set(0, 0, 0);
+        zoom(WORLD_SIZE * 1.5f);
     }
 
     // --------------------- Camera Boundaries -----------------

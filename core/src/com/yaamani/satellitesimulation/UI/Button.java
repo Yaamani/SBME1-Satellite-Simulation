@@ -107,6 +107,7 @@ public class Button extends Actor implements Disposable, Resizable {
     @Override
     public void onResize() {
         setWidth(getStage().getViewport().getWorldWidth() / WORLD_SIZE * width);
+
         //TODO: change the size of the text in parameters and generate a new font to match the change in size
         //Maybe the texture filtering is just fine ...
 

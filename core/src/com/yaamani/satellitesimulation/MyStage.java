@@ -42,6 +42,10 @@ public class MyStage extends Stage implements Resizable {
     private Button gto_btn;
     private Button geo_btn;
 
+    private Button zoomIn_btn;
+    private Button zoomOut_btn;
+    private Button reset_btn;
+
     private Texture texture;
 
     private float speedMultiplier;
@@ -80,6 +84,12 @@ public class MyStage extends Stage implements Resizable {
         initializeMySingleOrbitTimeline(this);
 
         initializeMySpeedSlider(ssg, this);
+
+        initializeZoomIn_btn();
+
+        initializeZoomOut_btn();
+
+        initializeReset_btn();
     }
 
     @Override
@@ -123,6 +133,18 @@ public class MyStage extends Stage implements Resizable {
 
         geo_btn.onResize();
         geo_btn.setPosition(getViewport().getWorldWidth() * 4/5 - getViewport().getWorldWidth() / 5/2 - individualTotal_btn.getWidth() / 2, 2*SLIDER_LINE_Y_POS);
+
+        zoomIn_btn.onResize();
+        zoomIn_btn.setPosition(SLIDER_KNOB_RADUIS * .7f,
+                getViewport().getWorldHeight() /2 + SLIDER_KNOB_RADUIS * 2);
+
+        zoomOut_btn.onResize();
+        zoomOut_btn.setPosition(SLIDER_KNOB_RADUIS * .7f,
+                getViewport().getWorldHeight() /2 - SLIDER_KNOB_RADUIS * 2);
+
+        reset_btn.onResize();
+        reset_btn.setPosition(getViewport().getWorldWidth() - SLIDER_KNOB_RADUIS * 3.7f,
+                getViewport().getWorldHeight() /2);
     }
 
     @Override
@@ -176,6 +198,18 @@ public class MyStage extends Stage implements Resizable {
 
     public Button getIndividualTotal_btn() {
         return individualTotal_btn;
+    }
+
+    public Button getZoomIn_btn() {
+        return zoomIn_btn;
+    }
+
+    public Button getZoomOut_btn() {
+        return zoomOut_btn;
+    }
+
+    public Button getReset_btn() {
+        return reset_btn;
     }
 
     // ------------- Initializers ------------
@@ -278,7 +312,6 @@ public class MyStage extends Stage implements Resizable {
                 () -> {
                     Gdx.app.log("LEO_BTN", "Clicked !!");
                     mySingleOrbitTimeline.setControllingOrbit(ssg.getLeo());
-
                 }
         );
 
@@ -329,5 +362,94 @@ public class MyStage extends Stage implements Resizable {
 
         geo_btn.getFont().getData().setScale(WORLD_SIZE/getViewport().getScreenHeight());
         geo_btn.getGlyphLayout().setText(geo_btn.getFont(), geo_btn.getText());
+    }
+
+    private void initializeZoomIn_btn() {
+        zoomIn_btn = new Button(shapeRenderer,
+                "+",
+                fontSize*2,
+                SLIDER_KNOB_RADUIS*3,
+                SLIDER_KNOB_RADUIS*3,
+                new Color(COLOR_LIGHT),
+                new Color(COLOR_DARK),
+                () -> {
+                    ssg.getControls().zoom(ssg.getViewport().getWorldHeight() + getViewport().getWorldHeight() * -1 * MOUSE_WHEEL_SENSITIVITY);
+                }) {
+
+            @Override
+            public void drawText(SpriteBatch spriteBatch) {
+                if (zoomIn_btn.isDrawText()) {
+                    zoomIn_btn.getFont().draw(spriteBatch,
+                            zoomIn_btn.getGlyphLayout(),
+                            getParent().getX() + getX() + getWidth() / 2 - zoomIn_btn.getGlyphLayout().width / 2,
+                            getParent().getY() + getY() + getHeight() / 2 + zoomIn_btn.getGlyphLayout().height / 1.65f);
+                }
+            }
+
+            @Override
+            public void onResize() {
+
+            }
+        };
+
+        addActor(zoomIn_btn);
+        zoomIn_btn.getFont().getData().setScale(WORLD_SIZE/getViewport().getScreenHeight());
+        zoomIn_btn.getGlyphLayout().setText(zoomIn_btn.getFont(), zoomIn_btn.getText());
+    }
+
+    private void initializeZoomOut_btn() {
+        zoomOut_btn = new Button(shapeRenderer,
+                "-",
+                fontSize*2,
+                SLIDER_KNOB_RADUIS*3,
+                SLIDER_KNOB_RADUIS*3,
+                new Color(COLOR_LIGHT),
+                new Color(COLOR_DARK),
+                () -> {
+                    ssg.getControls().zoom(ssg.getViewport().getWorldHeight() + getViewport().getWorldHeight() * 1 * MOUSE_WHEEL_SENSITIVITY);
+                }) {
+
+            @Override
+            public void drawText(SpriteBatch spriteBatch) {
+                if (zoomOut_btn.isDrawText()) {
+                    zoomOut_btn.getFont().draw(spriteBatch,
+                            zoomOut_btn.getGlyphLayout(),
+                            getParent().getX() + getX() + getWidth() / 2 - zoomOut_btn.getGlyphLayout().width / 2,
+                            getParent().getY() + getY() + getHeight() / 2 + zoomOut_btn.getGlyphLayout().height / 1.65f);
+                }
+            }
+
+            @Override
+            public void onResize() {
+
+            }
+        };
+
+        addActor(zoomOut_btn);
+        zoomOut_btn.getFont().getData().setScale(WORLD_SIZE/getViewport().getScreenHeight());
+        zoomOut_btn.getGlyphLayout().setText(zoomOut_btn.getFont(), zoomOut_btn.getText());
+    }
+
+    private void initializeReset_btn() {
+        reset_btn = new Button(shapeRenderer,
+                "R",
+                (int)(fontSize*1.5f),
+                SLIDER_KNOB_RADUIS*3,
+                SLIDER_KNOB_RADUIS*3,
+                new Color(COLOR_LIGHT),
+                new Color(COLOR_DARK),
+                () -> {
+                    ssg.getControls().reset();
+                }) {
+
+            @Override
+            public void onResize() {
+
+            }
+        };
+
+        addActor(reset_btn);
+        reset_btn.getFont().getData().setScale(WORLD_SIZE/getViewport().getScreenHeight());
+        reset_btn.getGlyphLayout().setText(reset_btn.getFont(), reset_btn.getText());
     }
 }
