@@ -39,7 +39,7 @@ public class EllipticalOrbit extends Orbit {
         //setCurrentTime(time);
 
         float t = (float) getCurrentTime();
-        float E = (float) (n * t + e * Math.sin(n*t)); //This is our solution to kepler equation
+        float E = (float) (n * t + e * Math.sin(n * t + e * Math.sin(n*t))); //This is our solution to kepler equation
         double theta = 2 * Math.atan(Math.sqrt((1 + e) / (1 - e)) * Math.tan(E / 2)) /* * getSpeedMultiplier()*/;
         float r = (float) (a * (1 - e * e) / (1 + e * Math.cos((float) theta)));
 

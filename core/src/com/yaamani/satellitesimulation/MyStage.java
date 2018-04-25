@@ -136,7 +136,7 @@ public class MyStage extends Stage implements Resizable {
 
         zoomIn_btn.onResize();
         zoomIn_btn.setPosition(SLIDER_KNOB_RADUIS * .7f,
-                getViewport().getWorldHeight() /2 + SLIDER_KNOB_RADUIS * 2);
+                getViewport().getWorldHeight() /2 + SLIDER_KNOB_RADUIS / 2);
 
         zoomOut_btn.onResize();
         zoomOut_btn.setPosition(SLIDER_KNOB_RADUIS * .7f,

@@ -23,7 +23,7 @@ public class Constants {
 
     public static final float SLIDER_LINE_HEIGHT = WORLD_SIZE / 200;
     public static final float SLIDER_KNOB_RADUIS = WORLD_SIZE / 35;
-    public static final float SLIDER_LINE_Y_POS = WORLD_SIZE / 12;
+    public static final float SLIDER_LINE_Y_POS = WORLD_SIZE / 25;
     public static final float SLIDER_DIVIDER_WIDTH = SLIDER_LINE_HEIGHT;
     public static final float SLIDER_DIVIDER_HEIGHT = SLIDER_KNOB_RADUIS * 2 + WORLD_SIZE / 100;
 
